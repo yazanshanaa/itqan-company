@@ -1,0 +1,603 @@
+{
+  "company": {
+    "nameAr": "هايتك",
+    "nameEn": "HiTech",
+    "phone": "+970 59 000 0000",
+    "whatsapp": "+970590000000",
+    "address": "فلسطين",
+    "addressEn": "Palestine",
+    "facebook": "https://facebook.com",
+    "instagram": "https://instagram.com",
+    "tiktok": "https://tiktok.com",
+    "linkedin": "https://linkedin.com",
+    "email": "",
+    "socialVisible": {
+      "facebook": true,
+      "instagram": true,
+      "tiktok": true,
+      "linkedin": true
+    }
+  },
+  "products": {
+    "visible": true,
+    "ar": [],
+    "en": [
+      {
+        "emoji": "🌐",
+        "image": "",
+        "cat": "Ready-Made Website",
+        "title": "Content Management System",
+        "desc": "A complete CMS with an easy-to-use admin panel, ready for immediate delivery",
+        "tags": [
+          "Node.js",
+          "Express",
+          "JSON"
+        ],
+        "price": "1500",
+        "currency": "₪",
+        "url": "",
+        "showUrl": false,
+        "visible": true
+      },
+      {
+        "emoji": "🛒",
+        "image": "",
+        "cat": "E-Commerce",
+        "title": "E-Commerce Platform",
+        "desc": "Full-featured online store with secure payment and product management",
+        "tags": [
+          "React",
+          "Node.js",
+          "Stripe"
+        ],
+        "price": "3500",
+        "currency": "₪",
+        "url": "",
+        "showUrl": false,
+        "visible": true
+      }
+    ]
+  },
+  "content": {
+    "ar": {
+      "nav.services": "خدماتنا",
+      "nav.portfolio": "أعمالنا",
+      "nav.about": "عنّا",
+      "nav.contact": "تواصل معنا",
+      "nav.cta": "ابدأ مشروعك",
+      "nav.home": "الرئيسية",
+      "hero.badge": "شريكك التقني الموثوق",
+      "hero.line1": "نبني مستقبلك",
+      "hero.line2": "الرقمي",
+      "hero.subtitle": "نصمم ونطور مواقع ويب متكاملة، تطبيقات موبايل، وحلول ذكاء اصطناعي تُحوّل أفكارك إلى واقع رقمي مذهل",
+      "hero.cta1": "ابدأ مشروعك الآن",
+      "hero.cta2": "استعرض أعمالنا",
+      "hero.scroll": "اكتشف أكثر",
+      "stat.projects": "مشروع منجز",
+      "stat.satisfaction": "رضا العملاء",
+      "nav.process": "كيف نعمل",
+      "svc.badge": "خدماتنا",
+      "svc.titleprefix": "حلول تقنية ",
+      "svc.titlehl": "متكاملة",
+      "svc.subtitle": "نقدم طيفاً واسعاً من الخدمات التقنية لمساعدة عملك على النمو والتوسع في العالم الرقمي",
+      "svc.more": "اعرف أكثر",
+      "about.badge": "من نحن",
+      "about.titleprefix": "فريق متخصص في ",
+      "about.titlehl": "بناء الحلول التقنية",
+      "about.desc": "هايتك شركة تقنية متخصصة في تطوير الحلول الرقمية. نجمع بين الإبداع التقني والفهم العميق لاحتياجات السوق.",
+      "about.cta": "تواصل مع فريقنا",
+      "port.badge": "أعمالنا",
+      "port.titleprefix": "مشاريع ",
+      "port.titlehl": "نفخر بها",
+      "port.cta": "ابدأ مشروعك",
+      "con.badge": "تواصل معنا",
+      "con.titleprefix": "هل لديك ",
+      "con.titlehl": "مشروع في ذهنك؟",
+      "con.subtitle": "نحن هنا لمساعدتك في تحقيق رؤيتك الرقمية. تواصل معنا وابدأ رحلتك التقنية",
+      "proc.badge": "كيف نعمل",
+      "proc.titleprefix": "من ",
+      "proc.titlehl": "الفكرة إلى التسليم",
+      "proc.subtitle": "عملية واضحة ومنظمة تضمن لك نتائج استثنائية في كل مشروع",
+      "testi.badge": "آراء العملاء",
+      "testi.titleprefix": "عملاؤنا ",
+      "testi.titlehl": "يتحدثون عنا",
+      "testi.subtitle": "ثقة عملائنا هي أكبر جائزة نحصل عليها — اقرأ تجاربهم الحقيقية معنا",
+      "con.phoneL": "الهاتف",
+      "con.emailL": "البريد الإلكتروني",
+      "con.addrL": "الموقع",
+      "con.waL": "واتساب",
+      "con.address": "فلسطين",
+      "form.name": "الاسم الكامل",
+      "form.email": "البريد الإلكتروني",
+      "form.svc": "الخدمة المطلوبة",
+      "form.pick": "اختر الخدمة...",
+      "form.msg": "رسالتك",
+      "form.send": "إرسال الرسالة",
+      "foot.desc": "شركة هايتك لحلول التقنية — نبني مستقبلك الرقمي بأحدث التقنيات.",
+      "foot.services": "خدماتنا",
+      "foot.quick": "روابط سريعة",
+      "foot.contact": "تواصل",
+      "foot.copy": "© 2025 هايتك. جميع الحقوق محفوظة",
+      "foot.admin": "⚙ لوحة التحكم",
+      "prod.badge": "للبيع الآن",
+      "prod.titleprefix": "أنظمة استثمارية ",
+      "prod.titlehl": "جاهزة للبيع",
+      "prod.subtitle": "حلول تقنية جاهزة للتسليم الفوري — اشترِ واستخدم مباشرةً دون انتظار",
+      "prod.viewBtn": "شاهد العرض",
+      "prod.contactBtn": "تواصل معنا للتفاصيل",
+      "prod.priceLabel": "السعر",
+      "nav.products": "أنظمة للبيع"
+    },
+    "en": {
+      "nav.services": "Services",
+      "nav.portfolio": "Portfolio",
+      "nav.about": "About",
+      "nav.contact": "Contact",
+      "nav.cta": "Start Project",
+      "nav.home": "Home",
+      "hero.badge": "Your Trusted Tech Partner",
+      "hero.line1": "We Build Your",
+      "hero.line2": "Digital Future",
+      "hero.subtitle": "We design and develop complete websites, mobile apps, and AI solutions that transform your ideas into amazing digital reality",
+      "hero.cta1": "Start Your Project",
+      "hero.cta2": "View Our Work",
+      "hero.scroll": "Discover More",
+      "stat.projects": "Projects Done",
+      "stat.satisfaction": "Satisfaction",
+      "nav.process": "How We Work",
+      "svc.badge": "Our Services",
+      "svc.titleprefix": "Tech Solutions ",
+      "svc.titlehl": "Complete",
+      "svc.subtitle": "We offer a wide range of tech services to help your business grow in the digital world",
+      "svc.more": "Learn More",
+      "about.badge": "About Us",
+      "about.titleprefix": "A Team Specialized In ",
+      "about.titlehl": "Building Tech Solutions",
+      "about.desc": "HiTech is a tech company specializing in digital solutions. We combine technical creativity with deep market understanding.",
+      "about.cta": "Contact Our Team",
+      "port.badge": "Portfolio",
+      "port.titleprefix": "Projects ",
+      "port.titlehl": "We're Proud Of",
+      "port.cta": "Start Your Project",
+      "con.badge": "Contact Us",
+      "con.titleprefix": "Do You Have a ",
+      "con.titlehl": "Project in Mind?",
+      "con.subtitle": "We're here to help achieve your digital vision. Contact us and start your tech journey",
+      "proc.badge": "How We Work",
+      "proc.titleprefix": "From ",
+      "proc.titlehl": "Idea to Delivery",
+      "proc.subtitle": "A clear and organized process that guarantees exceptional results in every project",
+      "testi.badge": "Client Reviews",
+      "testi.titleprefix": "Our Clients ",
+      "testi.titlehl": "Talk About Us",
+      "testi.subtitle": "Our clients' trust is our greatest award — read their real experiences with us",
+      "con.phoneL": "Phone",
+      "con.emailL": "Email",
+      "con.addrL": "Location",
+      "con.waL": "WhatsApp",
+      "con.address": "Palestine",
+      "form.name": "Full Name",
+      "form.email": "Email Address",
+      "form.svc": "Required Service",
+      "form.pick": "Select service...",
+      "form.msg": "Your Message",
+      "form.send": "Send Message",
+      "foot.desc": "HiTech Technology Solutions — Building your digital future with the latest technologies.",
+      "foot.services": "Services",
+      "foot.quick": "Quick Links",
+      "foot.contact": "Contact",
+      "foot.copy": "© 2025 HiTech. All Rights Reserved",
+      "foot.admin": "⚙ Admin Panel",
+      "prod.badge": "For Sale",
+      "prod.titleprefix": "Investment Systems ",
+      "prod.titlehl": "Ready to Buy",
+      "prod.subtitle": "Ready-made tech solutions for immediate delivery — buy and use right away",
+      "prod.viewBtn": "View Demo",
+      "prod.contactBtn": "Contact Us for Details",
+      "prod.priceLabel": "Price",
+      "nav.products": "Systems for Sale"
+    }
+  },
+  "services": {
+    "ar": [
+      {
+        "icon": "fa-globe",
+        "title": "مواقع الويب",
+        "desc": "نبني مواقع احترافية سريعة ومتجاوبة"
+      },
+      {
+        "icon": "fa-mobile-alt",
+        "title": "تطبيقات الموبايل",
+        "desc": "تطبيقات iOS وAndroid عالية الأداء"
+      },
+      {
+        "icon": "fa-paint-brush",
+        "title": "تصميم UI/UX",
+        "desc": "تصميم تجارب مستخدم استثنائية"
+      },
+      {
+        "icon": "fa-shopping-cart",
+        "title": "المتاجر الإلكترونية",
+        "desc": "متاجر إلكترونية متكاملة بأنظمة دفع آمنة"
+      },
+      {
+        "icon": "fa-robot",
+        "title": "نماذج الذكاء الاصطناعي",
+        "desc": "دمج AI في أعمالك لأتمتة العمليات"
+      },
+      {
+        "icon": "fa-headset",
+        "title": "الدعم والصيانة",
+        "desc": "دعم فني متواصل وصيانة دورية"
+      }
+    ],
+    "en": [
+      {
+        "icon": "fa-globe",
+        "title": "Web Development",
+        "desc": "Professional, fast and responsive websites"
+      },
+      {
+        "icon": "fa-mobile-alt",
+        "title": "Mobile Apps",
+        "desc": "High-performance iOS and Android apps"
+      },
+      {
+        "icon": "fa-paint-brush",
+        "title": "UI/UX Design",
+        "desc": "Exceptional user experiences and interfaces"
+      },
+      {
+        "icon": "fa-shopping-cart",
+        "title": "E-Commerce",
+        "desc": "Full-featured stores with secure payments"
+      },
+      {
+        "icon": "fa-robot",
+        "title": "AI Models",
+        "desc": "Integrate AI to automate your operations"
+      },
+      {
+        "icon": "fa-headset",
+        "title": "Support & Maintenance",
+        "desc": "24/7 technical support and maintenance"
+      }
+    ]
+  },
+  "stats": {
+    "ar": [
+      {
+        "n": 50,
+        "s": "+",
+        "l": "مشروع منجز"
+      },
+      {
+        "n": 30,
+        "s": "+",
+        "l": "عميل راضٍ"
+      },
+      {
+        "n": 3,
+        "s": "+",
+        "l": "سنوات خبرة"
+      },
+      {
+        "n": 98,
+        "s": "%",
+        "l": "نسبة الرضا"
+      }
+    ],
+    "en": [
+      {
+        "n": 50,
+        "s": "+",
+        "l": "Projects Done"
+      },
+      {
+        "n": 30,
+        "s": "+",
+        "l": "Happy Clients"
+      },
+      {
+        "n": 3,
+        "s": "+",
+        "l": "Years Experience"
+      },
+      {
+        "n": 98,
+        "s": "%",
+        "l": "Satisfaction"
+      }
+    ]
+  },
+  "aboutPoints": {
+    "ar": [
+      "فريق مؤهل وذو خبرة عالية",
+      "حلول مخصصة لكل عميل",
+      "دعم فني متواصل 24/7",
+      "أسعار تنافسية وجودة عالية"
+    ],
+    "en": [
+      "Highly qualified and experienced team",
+      "Custom solutions for every client",
+      "24/7 continuous technical support",
+      "Competitive pricing with high quality"
+    ]
+  },
+  "portfolio": {
+    "ar": [
+      {
+        "emoji": "🛒",
+        "cat": "متجر إلكتروني",
+        "title": "متجر الأزياء الفلسطيني",
+        "desc": "متجر إلكتروني متكامل مع نظام دفع آمن",
+        "tags": [
+          "Next.js",
+          "Stripe",
+          "PostgreSQL"
+        ]
+      },
+      {
+        "emoji": "🏥",
+        "cat": "موقع ويب",
+        "title": "بوابة العيادات الطبية",
+        "desc": "منصة لإدارة مواعيد العيادات",
+        "tags": [
+          "React",
+          "Node.js",
+          "MongoDB"
+        ]
+      },
+      {
+        "emoji": "📱",
+        "cat": "تطبيق موبايل",
+        "title": "تطبيق توصيل الطلبات",
+        "desc": "تطبيق توصيل مع تتبع مباشر",
+        "tags": [
+          "Flutter",
+          "Firebase"
+        ]
+      },
+      {
+        "emoji": "🤖",
+        "cat": "نموذج AI",
+        "title": "روبوت المحادثة الذكي",
+        "desc": "روبوت ذكي للدعم الفني",
+        "tags": [
+          "Python",
+          "GPT-4"
+        ]
+      },
+      {
+        "emoji": "🏨",
+        "cat": "موقع ويب",
+        "title": "موقع الفندق الراقي",
+        "desc": "موقع فندق مع نظام حجز",
+        "tags": [
+          "Vue.js",
+          "Laravel"
+        ]
+      },
+      {
+        "emoji": "📊",
+        "cat": "تطبيق ويب",
+        "title": "لوحة تحكم الأعمال",
+        "desc": "نظام إدارة متكامل",
+        "tags": [
+          "React",
+          "TypeScript"
+        ]
+      }
+    ],
+    "en": [
+      {
+        "emoji": "🛒",
+        "cat": "E-Commerce",
+        "title": "Palestinian Fashion Store",
+        "desc": "Full-featured fashion store",
+        "tags": [
+          "Next.js",
+          "Stripe",
+          "PostgreSQL"
+        ]
+      },
+      {
+        "emoji": "🏥",
+        "cat": "Website",
+        "title": "Medical Clinics Portal",
+        "desc": "Platform for clinic management",
+        "tags": [
+          "React",
+          "Node.js",
+          "MongoDB"
+        ]
+      },
+      {
+        "emoji": "📱",
+        "cat": "Mobile App",
+        "title": "Delivery Tracking App",
+        "desc": "Delivery app with live tracking",
+        "tags": [
+          "Flutter",
+          "Firebase"
+        ]
+      },
+      {
+        "emoji": "🤖",
+        "cat": "AI Model",
+        "title": "Smart Chatbot",
+        "desc": "AI-powered support chatbot",
+        "tags": [
+          "Python",
+          "GPT-4"
+        ]
+      },
+      {
+        "emoji": "🏨",
+        "cat": "Website",
+        "title": "Luxury Hotel Website",
+        "desc": "Hotel site with booking system",
+        "tags": [
+          "Vue.js",
+          "Laravel"
+        ]
+      },
+      {
+        "emoji": "📊",
+        "cat": "Web App",
+        "title": "Business Dashboard",
+        "desc": "Comprehensive management system",
+        "tags": [
+          "React",
+          "TypeScript"
+        ]
+      }
+    ]
+  },
+  "process": {
+    "ar": [
+      {
+        "icon": "💬",
+        "title": "الاستشارة",
+        "desc": "نجلس معك لفهم فكرتك واحتياجاتك بالكامل"
+      },
+      {
+        "icon": "📋",
+        "title": "التخطيط",
+        "desc": "نضع خطة واضحة وجدولاً زمنياً دقيقاً"
+      },
+      {
+        "icon": "🎨",
+        "title": "التصميم",
+        "desc": "نصمم واجهات جذابة ونعرضها عليك للموافقة"
+      },
+      {
+        "icon": "⚙️",
+        "title": "التطوير",
+        "desc": "نبني المشروع بأعلى معايير الجودة والأداء"
+      },
+      {
+        "icon": "🚀",
+        "title": "التسليم",
+        "desc": "نطلق مشروعك ونوفر دعماً مستمراً بعد التسليم"
+      }
+    ],
+    "en": [
+      {
+        "icon": "💬",
+        "title": "Consultation",
+        "desc": "We sit with you to fully understand your idea"
+      },
+      {
+        "icon": "📋",
+        "title": "Planning",
+        "desc": "We create a clear plan and precise timeline"
+      },
+      {
+        "icon": "🎨",
+        "title": "Design",
+        "desc": "We design interfaces and present them for approval"
+      },
+      {
+        "icon": "⚙️",
+        "title": "Development",
+        "desc": "We build the project with the highest quality standards"
+      },
+      {
+        "icon": "🚀",
+        "title": "Delivery",
+        "desc": "We launch your project and provide ongoing support"
+      }
+    ]
+  },
+  "testimonials": {
+    "ar": [
+      {
+        "text": "هايتك غيّرت وجه عملي التجاري كلياً. الموقع احترافي جداً وعملاؤنا يثنون عليه دائماً.",
+        "name": "أحمد الخالد",
+        "role": "صاحب متجر إلكتروني",
+        "avatar": "أ",
+        "stars": 5
+      },
+      {
+        "text": "سلّموا المشروع قبل الموعد المحدد وبجودة فاقت توقعاتي. سأتعامل معهم حتماً مجدداً.",
+        "name": "سارة محمود",
+        "role": "مديرة مشاريع",
+        "avatar": "س",
+        "stars": 5
+      },
+      {
+        "text": "تطبيق الموبايل حصل على تقييم ممتاز في المتاجر. يفهمون احتياجات العميل بشكل رائع.",
+        "name": "محمد عبد الله",
+        "role": "مؤسس شركة ناشئة",
+        "avatar": "م",
+        "stars": 5
+      },
+      {
+        "text": "الدعم الفني ممتاز وسريع الاستجابة. أي مشكلة يحلونها فوراً.",
+        "name": "ليلى حسن",
+        "role": "طبيبة",
+        "avatar": "ل",
+        "stars": 5
+      },
+      {
+        "text": "بنوا لنا متجراً متكاملاً بنظام دفع آمن. المبيعات ارتفعت بشكل ملحوظ بعد الإطلاق.",
+        "name": "خالد العمري",
+        "role": "صاحب متجر ملابس",
+        "avatar": "خ",
+        "stars": 5
+      },
+      {
+        "text": "فريق محترف يعمل بشغف حقيقي. كنت على دراية كاملة بتقدم المشروع طوال الوقت.",
+        "name": "نور الدين",
+        "role": "مدير تسويق",
+        "avatar": "ن",
+        "stars": 5
+      }
+    ],
+    "en": [
+      {
+        "text": "HiTech completely transformed my business. The website is incredibly professional.",
+        "name": "Ahmed Al-Khalid",
+        "role": "E-Commerce Owner",
+        "avatar": "A",
+        "stars": 5
+      },
+      {
+        "text": "Delivered ahead of schedule with quality that exceeded my expectations.",
+        "name": "Sara Mahmoud",
+        "role": "Project Manager",
+        "avatar": "S",
+        "stars": 5
+      },
+      {
+        "text": "The mobile app received excellent ratings. They understand client needs perfectly.",
+        "name": "Mohammed Abdullah",
+        "role": "Startup Founder",
+        "avatar": "M",
+        "stars": 5
+      },
+      {
+        "text": "Excellent and fast technical support. Any issue gets solved immediately.",
+        "name": "Layla Hassan",
+        "role": "Doctor",
+        "avatar": "L",
+        "stars": 5
+      },
+      {
+        "text": "Sales increased significantly after launch. Thank you HiTech!",
+        "name": "Khalid Al-Omari",
+        "role": "Fashion Store Owner",
+        "avatar": "K",
+        "stars": 5
+      },
+      {
+        "text": "A passionate team that kept me fully informed throughout the project.",
+        "name": "Nour Eddine",
+        "role": "Marketing Manager",
+        "avatar": "N",
+        "stars": 5
+      }
+    ]
+  }
+}

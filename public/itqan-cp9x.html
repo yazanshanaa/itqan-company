@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <title>إتقان تك | لوحة التحكم</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <style>
+    :root{
+      --bg:#060D1F; --sidebar:#091528; --card:#0C1A35; --card2:#112040;
+      --primary:#38BDF8; --secondary:#818CF8; --success:#34D399; --warning:#FBBF24; --danger:#EF4444;
+      --text:#F1F5F9; --muted:#94A3B8; --border:rgba(56,189,248,0.12);
+      --font:'Cairo',sans-serif; --radius:12px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+
+    /* LOGIN */
+    .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative}
+    .login-wrap::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(56,189,248,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.04) 1px,transparent 1px);background-size:50px 50px;pointer-events:none}
+    .login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:100%;max-width:420px;position:relative;z-index:1}
+    .login-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:32px}
+    .login-logo-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#050B18;font-weight:800}
+    .login-logo-text{font-size:26px;font-weight:800}
+    .login-logo-text span{color:var(--primary)}
+    .site-logo-img{height:68px;width:auto;border-radius:10px;display:block;object-fit:contain}
+    .login-logo .site-logo-img{height:126px;border-radius:14px}
+    .login-title{text-align:center;font-size:22px;font-weight:700;margin-bottom:8px}
+    .login-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:32px}
+    .inp-group{margin-bottom:20px}
+    .inp-group label{display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:8px}
+    .inp-group input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:all .3s}
+    .inp-group input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(56,189,248,.15)}
+    .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--secondary));border:none;border-radius:var(--radius);color:#050B18;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:all .3s}
+    .login-btn:hover{opacity:.9;transform:translateY(-1px)}
+    .login-err{color:var(--danger);font-size:13px;text-align:center;margin-top:12px;display:none}
+
+    /* ADMIN LAYOUT */
+    .admin-wrap{display:none;min-height:100vh}
+    .admin-wrap.active{display:flex}
+    .sidebar{width:260px;background:var(--sidebar);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;z-index:100;overflow-y:auto}
+    html[dir="ltr"] .sidebar{right:auto;left:0;border-left:none;border-right:1px solid var(--border)}
+    .sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .sidebar-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#050B18;font-weight:800}
+    .sidebar-logo-text{font-size:18px;font-weight:800}
+    .sidebar-logo-text span{color:var(--primary)}
+    .sidebar-badge{font-size:11px;background:rgba(56,189,248,.15);color:var(--primary);padding:2px 8px;border-radius:50px;margin-right:auto;font-weight:600}
+    html[dir="ltr"] .sidebar-badge{margin-right:0;margin-left:auto}
+    .sidebar-nav{padding:16px 12px;flex:1}
+    .sidebar-section{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:12px 8px 8px}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius);cursor:pointer;transition:all .3s;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:4px;border:none;background:none;width:100%;text-align:right;font-family:var(--font)}
+    html[dir="ltr"] .nav-item{text-align:left}
+    .nav-item:hover{background:rgba(56,189,248,.08);color:var(--text)}
+    .nav-item.active{background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(129,140,248,.1));color:var(--primary);border:1px solid rgba(56,189,248,.2)}
+    .nav-item i{width:20px;text-align:center;font-size:15px}
+    .sidebar-footer{padding:16px 12px;border-top:1px solid var(--border)}
+    .logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius);cursor:pointer;color:var(--danger);font-size:14px;font-weight:600;width:100%;border:none;background:none;font-family:var(--font);transition:all .3s}
+    .logout-btn:hover{background:rgba(239,68,68,.1)}
+    .main-content{flex:1;margin-right:260px;min-height:100vh;padding:0}
+    html[dir="ltr"] .main-content{margin-right:0;margin-left:260px}
+    .top-bar{background:rgba(6,13,31,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+    .top-bar h1{font-size:20px;font-weight:700}
+    .top-actions{display:flex;align-items:center;gap:12px}
+    .page-content{padding:32px}
+
+    /* CARDS */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px}
+    .card-title{font-size:16px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card-title i{color:var(--primary)}
+    .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+    .stat-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+    .stat-card .num{font-size:28px;font-weight:800;color:var(--primary)}
+    .stat-card .lbl{font-size:13px;color:var(--muted);margin-top:4px}
+
+    /* FORM ELEMENTS */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .fg{margin-bottom:16px}
+    .fg label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+    .fg input,.fg textarea,.fg select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:all .3s}
+    .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(56,189,248,.1)}
+    .fg textarea{resize:vertical;min-height:80px}
+    .fg select option{background:var(--card2)}
+    .tab-btns{display:flex;gap:8px;margin-bottom:20px}
+    .tab-btn{padding:8px 20px;border-radius:50px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .3s}
+    .tab-btn.active{background:var(--primary);color:#050B18;border-color:var(--primary)}
+
+    /* BUTTONS */
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:50px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .3s;text-decoration:none}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#050B18}
+    .btn-primary:hover{opacity:.9}
+    .btn-success{background:var(--success);color:#050B18}
+    .btn-danger{background:var(--danger);color:white}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+    .btn-sm{padding:7px 14px;font-size:13px}
+    .btn-icon{width:34px;height:34px;padding:0;border-radius:8px;display:inline-flex;align-items:center;justify-content:center}
+
+    /* TABLES / LISTS */
+    .item-list{display:flex;flex-direction:column;gap:12px}
+    .list-item{background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:16px}
+    .list-item-icon{width:42px;height:42px;background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(129,140,248,.1));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--primary);flex-shrink:0}
+    .list-item-content{flex:1}
+    .list-item-title{font-size:15px;font-weight:700;margin-bottom:2px}
+    .list-item-desc{font-size:13px;color:var(--muted)}
+    .list-item-actions{display:flex;gap:8px;flex-shrink:0}
+
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:580px;max-height:85vh;overflow-y:auto;position:relative}
+    .modal-title{font-size:18px;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+    .modal-title i{color:var(--primary)}
+    .modal-close{position:absolute;top:20px;left:20px;background:var(--card2);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:16px}
+    html[dir="ltr"] .modal-close{left:auto;right:20px}
+    .modal-close:hover{color:var(--danger);border-color:var(--danger)}
+    .modal-footer{display:flex;gap:12px;margin-top:24px;justify-content:flex-start}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:24px;left:24px;right:auto;background:var(--success);color:#050B18;padding:12px 20px;border-radius:10px;font-weight:700;font-size:14px;z-index:999;transform:translateY(100px);opacity:0;transition:all .4s;display:flex;align-items:center;gap:8px}
+    html[dir="ltr"] .toast{left:24px;right:auto}
+    .toast.show{transform:translateY(0);opacity:1}
+
+    /* BADGE */
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:12px;font-weight:600}
+    .badge-primary{background:rgba(56,189,248,.15);color:var(--primary)}
+    .badge-success{background:rgba(52,211,153,.15);color:var(--success)}
+
+    /* SECTION PAGES */
+    .section-page{display:none}
+    .section-page.active{display:block}
+
+    /* PREVIEW LINK */
+    .preview-bar{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:var(--radius);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .preview-bar span{font-size:13px;color:var(--success);font-weight:600}
+
+    /* SAVE NOTICE */
+    .save-notice{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3);border-radius:var(--radius);padding:12px 20px;font-size:13px;color:var(--primary);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+
+    @media(max-width:1024px){
+      .sidebar{width:220px}
+      .main-content{margin-right:220px}
+      .stat-cards{grid-template-columns:repeat(3,1fr)}
+      .top-bar{padding:14px 20px}
+    }
+    @media(max-width:768px){
+      .sidebar{width:100%;height:auto;position:relative;right:0;flex-direction:row;flex-wrap:wrap;padding:12px 16px;gap:4px}
+      .sidebar-logo{width:100%;padding:8px 0 12px;border-bottom:1px solid var(--border);margin-bottom:4px}
+      .nav-item{padding:8px 12px;font-size:13px;border-radius:8px}
+      .main-content{margin-right:0}
+      .admin-wrap.active{flex-direction:column}
+      .stat-cards{grid-template-columns:repeat(2,1fr)}
+      .form-row{grid-template-columns:1fr}
+      .top-bar{padding:12px 16px}
+      .top-bar-title{font-size:18px}
+      .modal{max-width:95vw;padding:24px 20px;margin:16px}
+      .login-card{padding:32px 24px;max-width:95vw}
+      .card{padding:20px 16px}
+    }
+    @media(max-width:480px){
+      .stat-cards{grid-template-columns:1fr 1fr}
+      .sidebar{padding:10px 12px}
+      .nav-item{padding:7px 10px;font-size:12px}
+      .section-page{padding:16px}
+      .modal{padding:20px 16px}
+      .btn{padding:8px 14px;font-size:13px}
+      .login-card{padding:28px 20px}
+      .top-bar{padding:10px 12px}
+      .list-item{flex-wrap:wrap;gap:8px}
+      .list-item-actions{width:100%;justify-content:flex-end}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div class="login-wrap" id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="img/orginal.png" alt="Itqan" class="site-logo-img">
+    </div>
+    <div class="login-title">لوحة التحكم</div>
+    <div class="login-sub">أدخل كلمة المرور للوصول إلى لوحة التحكم</div>
+    <div class="inp-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> دخول</button>
+    <div class="login-err" id="login-err">كلمة المرور غير صحيحة</div>
+    <div style="text-align:center;margin-top:20px">
+      <a href="index.html" style="color:var(--muted);font-size:13px;text-decoration:none"><i class="fas fa-arrow-right"></i> العودة للموقع</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN DASHBOARD ===== -->
+<div class="admin-wrap" id="admin-page">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="img/orginal.png" alt="Itqan" class="site-logo-img">
+      <span class="sidebar-badge">Admin</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">القائمة الرئيسية</div>
+      <button class="nav-item active" onclick="showSection('overview')"><i class="fas fa-th-large"></i>نظرة عامة</button>
+      <button class="nav-item" onclick="showSection('company')"><i class="fas fa-building"></i>معلومات الشركة</button>
+      <div class="sidebar-section">محتوى الموقع</div>
+      <button class="nav-item" onclick="showSection('hero')"><i class="fas fa-home"></i>الصفحة الرئيسية</button>
+      <button class="nav-item" onclick="showSection('services')"><i class="fas fa-cogs"></i>الخدمات</button>
+      <button class="nav-item" onclick="showSection('process')"><i class="fas fa-route"></i>كيف نعمل</button>
+      <button class="nav-item" onclick="showSection('portfolio')"><i class="fas fa-th"></i>الأعمال</button>
+      <button class="nav-item" onclick="showSection('products')"><i class="fas fa-tags"></i>أنظمة للبيع</button>
+      <button class="nav-item" onclick="showSection('testimonials')"><i class="fas fa-star"></i>آراء العملاء</button>
+      <button class="nav-item" onclick="showSection('about')"><i class="fas fa-users"></i>عن الشركة</button>
+      <button class="nav-item" onclick="showSection('stats')"><i class="fas fa-chart-bar"></i>الإحصائيات</button>
+      <button class="nav-item" onclick="showSection('contact')"><i class="fas fa-envelope"></i>التواصل</button>
+      <div class="sidebar-section">النصوص</div>
+      <button class="nav-item" onclick="showSection('texts')"><i class="fas fa-language"></i>ترجمة النصوص</button>
+      <div class="sidebar-section">الإعدادات</div>
+      <button class="nav-item" onclick="showSection('password')"><i class="fas fa-lock"></i>تغيير كلمة المرور</button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>تسجيل الخروج</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <div class="top-bar">
+      <h1 id="page-title">نظرة عامة</h1>
+      <div class="top-actions">
+        <a href="index.html" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-external-link-alt"></i>معاينة الموقع</a>
+        <button class="btn btn-success btn-sm" onclick="saveAll()"><i class="fas fa-save"></i>حفظ التغييرات</button>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- OVERVIEW -->
+      <div class="section-page active" id="sec-overview">
+        <div class="preview-bar">
+          <span><i class="fas fa-check-circle"></i> الموقع يعمل بشكل طبيعي</span>
+          <a href="index.html" target="_blank" class="btn btn-success btn-sm"><i class="fas fa-eye"></i>فتح الموقع</a>
+        </div>
+        <div class="stat-cards">
+          <div class="stat-card"><div class="stat-card-icon" style="background:rgba(56,189,248,.15);color:var(--primary)"><i class="fas fa-cogs"></i></div><div class="num" id="ov-svcs">0</div><div class="lbl">الخدمات</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="background:rgba(52,211,153,.15);color:var(--success)"><i class="fas fa-th"></i></div><div class="num" id="ov-ports">0</div><div class="lbl">مشاريع الأعمال</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="background:rgba(251,191,36,.15);color:var(--warning)"><i class="fas fa-tags"></i></div><div class="num" id="ov-prods">0</div><div class="lbl">أنظمة للبيع</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="background:rgba(251,191,36,.15);color:var(--warning)"><i class="fas fa-shield-alt"></i></div><div class="num" style="font-size:20px;color:var(--success)"><i class="fas fa-check"></i></div><div class="lbl">الموقع محمي</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-bolt"></i>إجراءات سريعة</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="showSection('services')"><i class="fas fa-plus"></i>إضافة خدمة</button>
+            <button class="btn btn-outline" onclick="showSection('portfolio')"><i class="fas fa-plus"></i>إضافة مشروع</button>
+            <button class="btn btn-outline" onclick="showSection('products')"><i class="fas fa-tags"></i>أنظمة للبيع</button>
+            <button class="btn btn-outline" onclick="showSection('company')"><i class="fas fa-edit"></i>تعديل معلومات الشركة</button>
+            <button class="btn btn-outline" onclick="showSection('hero')"><i class="fas fa-edit"></i>تعديل الصفحة الرئيسية</button>
+            <button class="btn btn-success" onclick="saveAll()"><i class="fas fa-save"></i>حفظ كل التغييرات</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-info-circle"></i>تعليمات الاستخدام</div>
+          <ul style="color:var(--muted);font-size:14px;line-height:2;padding-right:20px">
+            <li>عدّل أي قسم من القائمة الجانبية</li>
+            <li>اضغط "حفظ التغييرات" بعد كل تعديل</li>
+            <li>التغييرات تظهر فوراً في الموقع</li>
+            <li>كل قسم يدعم اللغتين العربية والإنجليزية</li>
+            <li>يمكنك إضافة وحذف الخدمات والمشاريع بحرية</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- COMPANY -->
+      <div class="section-page" id="sec-company">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>اضغط "حفظ التغييرات" بعد التعديل لتطبيق التغييرات على الموقع</div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-building"></i>معلومات الشركة</div>
+          <div class="form-row">
+            <div class="fg"><label>اسم الشركة (عربي)</label><input id="c-nameAr" placeholder="هايتك"></div>
+            <div class="fg"><label>Company Name (English)</label><input id="c-nameEn" placeholder="HiTech"></div>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>رقم الهاتف</label><input id="c-phone" placeholder="+970 59 000 0000"></div>
+            <div class="fg"><label>رقم واتساب</label><input id="c-wa" placeholder="+970590000000"></div>
+          </div>
+          <div class="fg"><label>البريد الإلكتروني</label><input id="c-email" placeholder="info@hitech.ps"></div>
+          <div class="form-row">
+            <div class="fg"><label>العنوان (عربي)</label><input id="c-addrAr" placeholder="جنين، فلسطين"></div>
+            <div class="fg"><label>Address (English)</label><input id="c-addrEn" placeholder="Jenin, Palestine"></div>
+          </div>
+          <div class="card-title" style="margin-top:8px"><i class="fab fa-facebook"></i>روابط التواصل الاجتماعي</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:14px"><i class="fas fa-info-circle"></i> يمكنك إخفاء أي منصة من الموقع بإلغاء تفعيل مفتاحها</p>
+          <div style="display:grid;gap:12px">
+            <div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+              <i class="fab fa-facebook" style="color:#1877F2;font-size:20px;text-align:center"></i>
+              <input id="c-fb" placeholder="https://facebook.com/..." dir="ltr">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;font-size:13px;font-weight:600"><input type="checkbox" id="sv-facebook" style="width:16px;height:16px;accent-color:var(--primary)">ظاهر</label>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+              <i class="fab fa-instagram" style="color:#E1306C;font-size:20px;text-align:center"></i>
+              <input id="c-ig" placeholder="https://instagram.com/..." dir="ltr">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;font-size:13px;font-weight:600"><input type="checkbox" id="sv-instagram" style="width:16px;height:16px;accent-color:var(--primary)">ظاهر</label>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+              <i class="fab fa-tiktok" style="color:var(--text);font-size:20px;text-align:center"></i>
+              <input id="c-tt" placeholder="https://tiktok.com/@..." dir="ltr">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;font-size:13px;font-weight:600"><input type="checkbox" id="sv-tiktok" style="width:16px;height:16px;accent-color:var(--primary)">ظاهر</label>
+            </div>
+            <div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+              <i class="fab fa-linkedin" style="color:#0A66C2;font-size:20px;text-align:center"></i>
+              <input id="c-li" placeholder="https://linkedin.com/..." dir="ltr">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;font-size:13px;font-weight:600"><input type="checkbox" id="sv-linkedin" style="width:16px;height:16px;accent-color:var(--primary)">ظاهر</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO -->
+      <div class="section-page" id="sec-hero">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>نصوص الصفحة الرئيسية (Hero Section)</div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'hero-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'hero-en')">English</button></div>
+        <div id="hero-ar">
+          <div class="card">
+            <div class="card-title"><i class="fas fa-badge"></i>شارة البادج</div>
+            <div class="fg"><label>نص البادج</label><input id="h-badge-ar" placeholder="شريكك التقني الموثوق"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-heading"></i>العنوان الرئيسي</div>
+            <div class="fg"><label>السطر الأول</label><input id="h-line1-ar" placeholder="نبني مستقبلك"></div>
+            <div class="fg"><label>السطر الثاني (ملوّن)</label><input id="h-line2-ar" placeholder="الرقمي"></div>
+            <div class="fg"><label>النص الفرعي</label><textarea id="h-sub-ar" placeholder="وصف قصير..."></textarea></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-mouse-pointer"></i>أزرار الدعوة</div>
+            <div class="form-row">
+              <div class="fg"><label>الزر الأول</label><input id="h-cta1-ar" placeholder="ابدأ مشروعك الآن"></div>
+              <div class="fg"><label>الزر الثاني</label><input id="h-cta2-ar" placeholder="استعرض أعمالنا"></div>
+            </div>
+          </div>
+        </div>
+        <div id="hero-en" style="display:none">
+          <div class="card">
+            <div class="card-title"><i class="fas fa-badge"></i>Badge Text</div>
+            <div class="fg"><label>Badge</label><input id="h-badge-en" placeholder="Your Trusted Tech Partner"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-heading"></i>Main Title</div>
+            <div class="fg"><label>Line 1</label><input id="h-line1-en" placeholder="We Build Your"></div>
+            <div class="fg"><label>Line 2 (colored)</label><input id="h-line2-en" placeholder="Digital Future"></div>
+            <div class="fg"><label>Subtitle</label><textarea id="h-sub-en" placeholder="Short description..."></textarea></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-mouse-pointer"></i>CTA Buttons</div>
+            <div class="form-row">
+              <div class="fg"><label>Button 1</label><input id="h-cta1-en" placeholder="Start Your Project"></div>
+              <div class="fg"><label>Button 2</label><input id="h-cta2-en" placeholder="View Our Work"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="section-page" id="sec-services">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>إدارة الخدمات — يمكنك إضافة أو تعديل أو حذف الخدمات</div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'svcs-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'svcs-en')">English</button></div>
+        <div style="margin-bottom:16px;display:flex;gap:12px">
+          <button class="btn btn-primary btn-sm" onclick="openAddService('ar')"><i class="fas fa-plus"></i>إضافة خدمة (عربي)</button>
+          <button class="btn btn-outline btn-sm" onclick="openAddService('en')"><i class="fas fa-plus"></i>Add Service (EN)</button>
+        </div>
+        <div id="svcs-ar"><div class="item-list" id="svcs-list-ar"></div></div>
+        <div id="svcs-en" style="display:none"><div class="item-list" id="svcs-list-en"></div></div>
+      </div>
+
+      <!-- PROCESS -->
+      <div class="section-page" id="sec-process">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>خطوات "كيف نعمل" — تظهر في الموقع كمراحل مرقمة</div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'proc-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'proc-en')">English</button></div>
+        <div style="margin-bottom:16px;display:flex;gap:12px">
+          <button class="btn btn-primary btn-sm" onclick="openAddStep('ar')"><i class="fas fa-plus"></i>إضافة خطوة (عربي)</button>
+          <button class="btn btn-outline btn-sm" onclick="openAddStep('en')"><i class="fas fa-plus"></i>Add Step (EN)</button>
+        </div>
+        <div id="proc-ar"><div class="item-list" id="proc-list-ar"></div></div>
+        <div id="proc-en" style="display:none"><div class="item-list" id="proc-list-en"></div></div>
+      </div>
+
+
+      <!-- TESTIMONIALS -->
+      <div class="section-page" id="sec-testimonials">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>آراء العملاء — أضف شهادات حقيقية لبناء الثقة</div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'tst-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'tst-en')">English</button></div>
+        <div style="margin-bottom:16px;display:flex;gap:12px">
+          <button class="btn btn-primary btn-sm" onclick="openAddTesti('ar')"><i class="fas fa-plus"></i>إضافة رأي (عربي)</button>
+          <button class="btn btn-outline btn-sm" onclick="openAddTesti('en')"><i class="fas fa-plus"></i>Add Review (EN)</button>
+        </div>
+        <div id="tst-ar"><div class="item-list" id="testi-list-ar"></div></div>
+        <div id="tst-en" style="display:none"><div class="item-list" id="testi-list-en"></div></div>
+      </div>
+
+      <!-- PORTFOLIO -->
+      <div class="section-page" id="sec-portfolio">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>إدارة مشاريع الأعمال</div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'port-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'port-en')">English</button></div>
+        <div style="margin-bottom:16px;display:flex;gap:12px">
+          <button class="btn btn-primary btn-sm" onclick="openAddPort('ar')"><i class="fas fa-plus"></i>إضافة مشروع (عربي)</button>
+          <button class="btn btn-outline btn-sm" onclick="openAddPort('en')"><i class="fas fa-plus"></i>Add Project (EN)</button>
+        </div>
+        <div id="port-ar"><div class="item-list" id="port-list-ar"></div></div>
+        <div id="port-en" style="display:none"><div class="item-list" id="port-list-en"></div></div>
+      </div>
+
+      <!-- PRODUCTS FOR SALE -->
+      <div class="section-page" id="sec-products">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>إدارة الأنظمة والمواقع المعروضة للبيع</div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title"><i class="fas fa-eye"></i>إظهار القسم في الموقع</div>
+          <div style="display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px">
+            <input type="checkbox" id="products-visible-chk" style="width:20px;height:20px;cursor:pointer;accent-color:var(--primary)" onchange="toggleProductsSection()">
+            <label for="products-visible-chk" style="cursor:pointer;font-size:14px;font-weight:600;margin:0">تفعيل وإظهار قسم "أنظمة للبيع" في الموقع الرئيسي</label>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-top:10px"><i class="fas fa-info-circle"></i> عند تعطيله يختفي القسم بالكامل من الموقع حتى لو كانت هناك عناصر مضافة</p>
+        </div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'prod-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'prod-en')">English</button></div>
+        <div style="margin-bottom:16px;display:flex;gap:12px">
+          <button class="btn btn-primary btn-sm" onclick="openAddProd('ar')"><i class="fas fa-plus"></i>إضافة منتج (عربي)</button>
+          <button class="btn btn-outline btn-sm" onclick="openAddProd('en')"><i class="fas fa-plus"></i>Add Product (EN)</button>
+        </div>
+        <div id="prod-ar"><div class="item-list" id="prod-list-ar"></div></div>
+        <div id="prod-en" style="display:none"><div class="item-list" id="prod-list-en"></div></div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="section-page" id="sec-about">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>قسم "عن الشركة"</div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'abt-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'abt-en')">English</button></div>
+        <div id="abt-ar">
+          <div class="card">
+            <div class="card-title"><i class="fas fa-align-left"></i>نصوص القسم</div>
+            <div class="fg"><label>الوصف</label><textarea id="about-desc-ar"></textarea></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-list-check"></i>نقاط المميزات</div>
+            <div id="pts-list-ar"></div>
+            <button class="btn btn-outline btn-sm" onclick="addPoint('ar')"><i class="fas fa-plus"></i>إضافة نقطة</button>
+          </div>
+        </div>
+        <div id="abt-en" style="display:none">
+          <div class="card">
+            <div class="card-title"><i class="fas fa-align-left"></i>Section Text</div>
+            <div class="fg"><label>Description</label><textarea id="about-desc-en"></textarea></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="fas fa-list-check"></i>Bullet Points</div>
+            <div id="pts-list-en"></div>
+            <button class="btn btn-outline btn-sm" onclick="addPoint('en')"><i class="fas fa-plus"></i>Add Point</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="section-page" id="sec-stats">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>إحصائيات الشركة التي تظهر في الموقع</div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'st-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'st-en')">English</button></div>
+        <div id="st-ar"><div class="card"><div class="card-title"><i class="fas fa-chart-bar"></i>الإحصائيات (عربي)</div><div id="stats-form-ar"></div></div></div>
+        <div id="st-en" style="display:none"><div class="card"><div class="card-title"><i class="fas fa-chart-bar"></i>Statistics (English)</div><div id="stats-form-en"></div></div></div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="section-page" id="sec-contact">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>عنوان وتفاصيل قسم التواصل</div>
+
+        <!-- معلومات الاتصال الفعلية -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-address-book"></i>معلومات التواصل</div>
+          <div class="form-row">
+            <div class="fg"><label><i class="fas fa-phone"></i> رقم الهاتف</label><input id="con-phone" placeholder="+970 59 000 0000" dir="ltr"></div>
+            <div class="fg"><label><i class="fab fa-whatsapp"></i> واتساب</label><input id="con-wa" placeholder="+970590000000" dir="ltr"></div>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label><i class="fas fa-envelope"></i> البريد الإلكتروني</label><input id="con-email" placeholder="info@company.com" dir="ltr" type="email"></div>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label><i class="fas fa-map-marker-alt"></i> العنوان (عربي)</label><input id="con-addr-ar" placeholder="جنين، فلسطين"></div>
+            <div class="fg"><label><i class="fas fa-map-marker-alt"></i> Address (English)</label><input id="con-addr-en" placeholder="Jenin, Palestine" dir="ltr"></div>
+          </div>
+        </div>
+
+        <!-- نصوص القسم -->
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'con-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'con-en')">English</button></div>
+        <div id="con-ar">
+          <div class="card">
+            <div class="card-title"><i class="fas fa-envelope"></i>نصوص قسم التواصل (عربي)</div>
+            <div class="fg"><label>العنوان الرئيسي (الجزء الملوّن)</label><input id="con-titlehl-ar" placeholder="مشروع في ذهنك؟"></div>
+            <div class="fg"><label>النص الفرعي</label><textarea id="con-sub-ar"></textarea></div>
+          </div>
+        </div>
+        <div id="con-en" style="display:none">
+          <div class="card">
+            <div class="card-title"><i class="fas fa-envelope"></i>Contact Section Texts (English)</div>
+            <div class="fg"><label>Highlighted Title Part</label><input id="con-titlehl-en" placeholder="Project in Mind?"></div>
+            <div class="fg"><label>Subtitle</label><textarea id="con-sub-en"></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEXTS -->
+      <div class="section-page" id="sec-texts">
+        <div class="save-notice"><i class="fas fa-info-circle"></i>جميع نصوص الموقع القابلة للتعديل</div>
+        <div class="tab-btns"><button class="tab-btn active" onclick="switchTab(this,'txt-ar')">العربية</button><button class="tab-btn" onclick="switchTab(this,'txt-en')">English</button></div>
+        <div id="txt-ar"><div class="card"><div class="card-title"><i class="fas fa-language"></i>النصوص العربية</div><div id="texts-form-ar"></div></div></div>
+        <div id="txt-en" style="display:none"><div class="card"><div class="card-title"><i class="fas fa-language"></i>English Texts</div><div id="texts-form-en"></div></div></div>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="section-page" id="sec-password">
+        <div class="card" style="max-width:440px">
+          <div class="card-title"><i class="fas fa-lock"></i>تغيير كلمة المرور</div>
+          <div class="fg"><label>كلمة المرور الحالية</label><input type="password" id="p-old"></div>
+          <div class="fg"><label>كلمة المرور الجديدة</label><input type="password" id="p-new"></div>
+          <div class="fg"><label>تأكيد كلمة المرور الجديدة</label><input type="password" id="p-conf"></div>
+          <button class="btn btn-primary" onclick="changePass()"><i class="fas fa-save"></i>حفظ كلمة المرور</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- STEP MODAL -->
+<div class="modal-overlay" id="step-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('step-modal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-route"></i><span id="step-modal-title">إضافة خطوة</span></div>
+    <input type="hidden" id="step-edit-idx" value="-1">
+    <input type="hidden" id="step-edit-lang" value="ar">
+    <div class="fg"><label>أيقونة (إيموجي)</label><input id="step-icon" placeholder="💬" maxlength="4"></div>
+    <div class="fg"><label>عنوان الخطوة</label><input id="step-title" placeholder="الاستشارة"></div>
+    <div class="fg"><label>الوصف</label><textarea id="step-desc" placeholder="وصف مختصر..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveStep()"><i class="fas fa-save"></i>حفظ</button>
+      <button class="btn btn-outline" onclick="closeModal('step-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIAL MODAL -->
+<div class="modal-overlay" id="testi-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('testi-modal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-star"></i><span id="testi-modal-title">إضافة رأي</span></div>
+    <input type="hidden" id="testi-edit-idx" value="-1">
+    <input type="hidden" id="testi-edit-lang" value="ar">
+    <div class="fg"><label>الحرف الأول للصورة (مثل: أ، م، س)</label><input id="testi-avatar" placeholder="أ" maxlength="2"></div>
+    <div class="fg"><label>الاسم</label><input id="testi-name" placeholder="أحمد الخالد"></div>
+    <div class="fg"><label>الوظيفة / الدور</label><input id="testi-role" placeholder="صاحب متجر إلكتروني"></div>
+    <div class="fg"><label>نص الشهادة</label><textarea id="testi-text" placeholder="تجربتي مع هايتك كانت..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveTesti()"><i class="fas fa-save"></i>حفظ</button>
+      <button class="btn btn-outline" onclick="closeModal('testi-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICE MODAL -->
+<div class="modal-overlay" id="svc-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('svc-modal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-cog"></i><span id="svc-modal-title">إضافة خدمة</span></div>
+    <input type="hidden" id="svc-edit-idx" value="-1">
+    <input type="hidden" id="svc-edit-lang" value="ar">
+    <div class="fg"><label>أيقونة FontAwesome (مثال: fa-globe)</label><input id="svc-icon" placeholder="fa-globe"></div>
+    <div class="fg">
+      <label>أو: رابط صورة الخدمة (تستبدل الأيقونة إن أُضيفت)</label>
+      <input id="svc-image-url" placeholder="https://example.com/icon.png" dir="ltr" oninput="previewSvcImg(this.value)">
+      <div id="svc-img-preview" style="width:60px;height:60px;border:1px solid var(--border);border-radius:10px;margin-top:8px;overflow:hidden;display:none;background:var(--card2)">
+        <img id="svc-img-preview-img" src="" style="width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+    <div class="fg"><label>عنوان الخدمة</label><input id="svc-title" placeholder="مواقع الويب"></div>
+    <div class="fg"><label>وصف الخدمة</label><textarea id="svc-desc" placeholder="وصف مختصر للخدمة..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveService()"><i class="fas fa-save"></i>حفظ</button>
+      <button class="btn btn-outline" onclick="closeModal('svc-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- PORTFOLIO MODAL -->
+<div class="modal-overlay" id="port-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('port-modal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-th"></i><span id="port-modal-title">إضافة مشروع</span></div>
+    <input type="hidden" id="port-edit-idx" value="-1">
+    <input type="hidden" id="port-edit-lang" value="ar">
+    <div class="fg">
+      <label>رابط صورة المشروع</label>
+      <input id="port-image-url" placeholder="https://example.com/image.jpg" dir="ltr" oninput="previewPortImg(this.value)">
+      <div id="port-img-preview" style="width:100%;height:160px;border:1px solid var(--border);border-radius:10px;margin-top:8px;overflow:hidden;display:none;background:var(--card2)">
+        <img id="port-img-preview-img" src="" style="width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+    <div class="fg"><label>رمز تعبيري (يُستخدم إن لم تُضَف صورة)</label><input id="port-emoji" placeholder="📦" maxlength="4" style="font-size:22px;text-align:center"></div>
+    <div class="fg"><label>التصنيف</label><input id="port-cat" placeholder="متجر إلكتروني"></div>
+    <div class="fg"><label>اسم المشروع</label><input id="port-title" placeholder="اسم المشروع"></div>
+    <div class="fg"><label>الوصف</label><textarea id="port-desc" placeholder="وصف المشروع..."></textarea></div>
+    <div class="fg"><label>التقنيات (مفصولة بفاصلة)</label><input id="port-tags" placeholder="React, Node.js, MongoDB"></div>
+    <div class="fg"><label>رابط الموقع (اختياري)</label><input id="port-url" placeholder="https://example.com" dir="ltr"></div>
+    <div class="fg" style="display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 16px">
+      <input type="checkbox" id="port-show-url" style="width:18px;height:18px;cursor:pointer;accent-color:var(--primary)">
+      <label for="port-show-url" style="cursor:pointer;font-size:14px;font-weight:600;margin:0">إظهار زر "شاهد الموقع" للزوار</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveProject()"><i class="fas fa-save"></i>حفظ</button>
+      <button class="btn btn-outline" onclick="closeModal('port-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS MODAL -->
+<div class="modal-overlay" id="prod-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('prod-modal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-tags"></i><span id="prod-modal-title">إضافة منتج</span></div>
+    <input type="hidden" id="prod-edit-idx" value="-1">
+    <input type="hidden" id="prod-edit-lang" value="ar">
+    <div class="fg">
+      <label>رابط صورة المنتج/النظام</label>
+      <input id="prod-image-url" placeholder="https://example.com/image.jpg" dir="ltr" oninput="previewProdImg(this.value)">
+      <div id="prod-img-preview" style="width:100%;height:160px;border:1px solid var(--border);border-radius:10px;margin-top:8px;overflow:hidden;display:none;background:var(--card2)">
+        <img id="prod-img-preview-img" src="" style="width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+    <div class="fg"><label>رمز تعبيري (يُستخدم إن لم تُضَف صورة)</label><input id="prod-emoji" placeholder="📦" maxlength="4" style="font-size:22px;text-align:center"></div>
+    <div class="fg"><label>التصنيف</label><input id="prod-cat" placeholder="موقع ويب جاهز"></div>
+    <div class="fg"><label>اسم النظام / الموقع</label><input id="prod-title" placeholder="اسم المنتج"></div>
+    <div class="fg"><label>الوصف</label><textarea id="prod-desc" placeholder="وصف مختصر..."></textarea></div>
+    <div class="fg"><label>التقنيات المستخدمة (مفصولة بفاصلة)</label><input id="prod-tags" placeholder="React, Node.js, MongoDB"></div>
+    <div class="fg" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div><label>السعر (اختياري)</label><input id="prod-price" placeholder="1500" type="text" dir="ltr"></div>
+      <div><label>العملة</label><input id="prod-currency" placeholder="₪" style="text-align:center"></div>
+    </div>
+    <div class="fg"><label>رابط عرض / ديمو (اختياري)</label><input id="prod-url" placeholder="https://example.com" dir="ltr"></div>
+    <div class="fg" style="display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 16px">
+      <input type="checkbox" id="prod-show-url" style="width:18px;height:18px;cursor:pointer;accent-color:var(--primary)">
+      <label for="prod-show-url" style="cursor:pointer;font-size:14px;font-weight:600;margin:0">إظهار زر "شاهد العرض" للزوار</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveProduct()"><i class="fas fa-save"></i>حفظ</button>
+      <button class="btn btn-outline" onclick="closeModal('prod-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ======= DEFAULT DATA (same as main site) =======
+  const DEFAULT = {
+    company:{nameAr:"هايتك",nameEn:"HiTech",phone:"+970 59 000 0000",email:"info@hitech.ps",whatsapp:"+970590000000",address:"جنين، فلسطين",addressEn:"Jenin, Palestine",facebook:"https://facebook.com",instagram:"https://instagram.com",tiktok:"https://tiktok.com",linkedin:"https://linkedin.com",socialVisible:{facebook:true,instagram:true,tiktok:true,linkedin:true}},
+    content:{
+      ar:{"nav.services":"خدماتنا","nav.portfolio":"أعمالنا","nav.about":"عنّا","nav.contact":"تواصل معنا","nav.cta":"ابدأ مشروعك","nav.home":"الرئيسية","hero.badge":"شريكك التقني الموثوق","hero.line1":"نبني مستقبلك","hero.line2":"الرقمي","hero.subtitle":"نصمم ونطور مواقع ويب متكاملة، تطبيقات موبايل، وحلول ذكاء اصطناعي تُحوّل أفكارك إلى واقع رقمي مذهل","hero.cta1":"ابدأ مشروعك الآن","hero.cta2":"استعرض أعمالنا","hero.scroll":"اكتشف أكثر","stat.projects":"مشروع منجز","stat.satisfaction":"رضا العملاء","svc.badge":"خدماتنا","svc.titlehl":"متكاملة","svc.subtitle":"نقدم طيفاً واسعاً من الخدمات التقنية لمساعدة عملك على النمو والتوسع في العالم الرقمي","svc.more":"اعرف أكثر","about.badge":"من نحن","about.titlehl":"بناء الحلول التقنية","about.desc":"هايتك شركة تقنية متخصصة في تطوير الحلول الرقمية. نجمع بين الإبداع التقني والفهم العميق لاحتياجات السوق.","about.cta":"تواصل مع فريقنا","port.badge":"أعمالنا","port.titlehl":"نفخر بها","port.cta":"ابدأ مشروعك","con.badge":"تواصل معنا","con.titlehl":"مشروع في ذهنك؟","con.subtitle":"نحن هنا لمساعدتك في تحقيق رؤيتك الرقمية. تواصل معنا وابدأ رحلتك التقنية","con.phoneL":"الهاتف","con.emailL":"البريد الإلكتروني","con.addrL":"الموقع","con.waL":"واتساب","con.address":"جنين، فلسطين","form.name":"الاسم الكامل","form.email":"البريد الإلكتروني","form.svc":"الخدمة المطلوبة","form.pick":"اختر الخدمة...","form.msg":"رسالتك","form.send":"إرسال الرسالة","foot.desc":"شركة هايتك لحلول التقنية — نبني مستقبلك الرقمي بأحدث التقنيات.","foot.services":"خدماتنا","foot.quick":"روابط سريعة","foot.contact":"تواصل","foot.copy":"© 2025 هايتك. جميع الحقوق محفوظة","foot.admin":"⚙ لوحة التحكم"},
+      en:{"nav.services":"Services","nav.portfolio":"Portfolio","nav.about":"About","nav.contact":"Contact","nav.cta":"Start Project","nav.home":"Home","hero.badge":"Your Trusted Tech Partner","hero.line1":"We Build Your","hero.line2":"Digital Future","hero.subtitle":"We design and develop complete websites, mobile apps, and AI solutions that transform your ideas into amazing digital reality","hero.cta1":"Start Your Project","hero.cta2":"View Our Work","hero.scroll":"Discover More","stat.projects":"Projects Done","stat.satisfaction":"Satisfaction","svc.badge":"Our Services","svc.titlehl":"Complete","svc.subtitle":"We offer a wide range of tech services to help your business grow in the digital world","svc.more":"Learn More","about.badge":"About Us","about.titlehl":"Building Tech Solutions","about.desc":"HiTech is a tech company specializing in digital solutions. We combine technical creativity with deep market understanding.","about.cta":"Contact Our Team","port.badge":"Portfolio","port.titlehl":"We're Proud Of","port.cta":"Start Your Project","con.badge":"Contact Us","con.titlehl":"Project in Mind?","con.subtitle":"We're here to help achieve your digital vision. Contact us and start your tech journey","con.phoneL":"Phone","con.emailL":"Email","con.addrL":"Location","con.waL":"WhatsApp","con.address":"Jenin, Palestine","form.name":"Full Name","form.email":"Email Address","form.svc":"Required Service","form.pick":"Select service...","form.msg":"Your Message","form.send":"Send Message","foot.desc":"HiTech Technology Solutions — Building your digital future with the latest technologies.","foot.services":"Services","foot.quick":"Quick Links","foot.contact":"Contact","foot.copy":"© 2025 HiTech. All Rights Reserved","foot.admin":"⚙ Admin Panel"}
+    },
+    services:{
+      ar:[{icon:"fa-globe",title:"مواقع الويب",desc:"نبني مواقع احترافية سريعة ومتجاوبة"},{icon:"fa-mobile-alt",title:"تطبيقات الموبايل",desc:"تطبيقات iOS وAndroid عالية الأداء"},{icon:"fa-paint-brush",title:"تصميم UI/UX",desc:"تصميم تجارب مستخدم استثنائية"},{icon:"fa-shopping-cart",title:"المتاجر الإلكترونية",desc:"متاجر إلكترونية متكاملة بأنظمة دفع آمنة"},{icon:"fa-robot",title:"نماذج الذكاء الاصطناعي",desc:"دمج AI في أعمالك لأتمتة العمليات"},{icon:"fa-headset",title:"الدعم والصيانة",desc:"دعم فني متواصل وصيانة دورية"}],
+      en:[{icon:"fa-globe",title:"Web Development",desc:"Professional, fast and responsive websites"},{icon:"fa-mobile-alt",title:"Mobile Apps",desc:"High-performance iOS and Android apps"},{icon:"fa-paint-brush",title:"UI/UX Design",desc:"Exceptional user experiences and interfaces"},{icon:"fa-shopping-cart",title:"E-Commerce",desc:"Full-featured stores with secure payments"},{icon:"fa-robot",title:"AI Models",desc:"Integrate AI to automate your operations"},{icon:"fa-headset",title:"Support & Maintenance",desc:"24/7 technical support and maintenance"}]
+    },
+    stats:{ar:[{n:50,s:"+",l:"مشروع منجز"},{n:30,s:"+",l:"عميل راضٍ"},{n:3,s:"+",l:"سنوات خبرة"},{n:98,s:"%",l:"نسبة الرضا"}],en:[{n:50,s:"+",l:"Projects Done"},{n:30,s:"+",l:"Happy Clients"},{n:3,s:"+",l:"Years Experience"},{n:98,s:"%",l:"Satisfaction"}]},
+    aboutPoints:{ar:["فريق مؤهل وذو خبرة عالية","حلول مخصصة لكل عميل","دعم فني متواصل 24/7","أسعار تنافسية وجودة عالية"],en:["Highly qualified and experienced team","Custom solutions for every client","24/7 continuous technical support","Competitive pricing with high quality"]},
+    portfolio:{ar:[{emoji:"🛒",cat:"متجر إلكتروني",title:"متجر الأزياء الفلسطيني",desc:"متجر إلكتروني متكامل مع نظام دفع آمن",tags:["Next.js","Stripe","PostgreSQL"]},{emoji:"🏥",cat:"موقع ويب",title:"بوابة العيادات الطبية",desc:"منصة لإدارة مواعيد العيادات",tags:["React","Node.js","MongoDB"]},{emoji:"📱",cat:"تطبيق موبايل",title:"تطبيق توصيل الطلبات",desc:"تطبيق توصيل مع تتبع مباشر",tags:["Flutter","Firebase"]},{emoji:"🤖",cat:"نموذج AI",title:"روبوت المحادثة الذكي",desc:"روبوت ذكي للدعم الفني",tags:["Python","GPT-4"]},{emoji:"🏨",cat:"موقع ويب",title:"موقع الفندق الراقي",desc:"موقع فندق مع نظام حجز",tags:["Vue.js","Laravel"]},{emoji:"📊",cat:"تطبيق ويب",title:"لوحة تحكم الأعمال",desc:"نظام إدارة متكامل",tags:["React","TypeScript"]}],en:[{emoji:"🛒",cat:"E-Commerce",title:"Palestinian Fashion Store",desc:"Full-featured fashion store",tags:["Next.js","Stripe","PostgreSQL"]},{emoji:"🏥",cat:"Website",title:"Medical Clinics Portal",desc:"Platform for clinic management",tags:["React","Node.js","MongoDB"]},{emoji:"📱",cat:"Mobile App",title:"Delivery Tracking App",desc:"Delivery app with live tracking",tags:["Flutter","Firebase"]},{emoji:"🤖",cat:"AI Model",title:"Smart Chatbot",desc:"AI-powered support chatbot",tags:["Python","GPT-4"]},{emoji:"🏨",cat:"Website",title:"Luxury Hotel Website",desc:"Hotel site with booking system",tags:["Vue.js","Laravel"]},{emoji:"📊",cat:"Web App",title:"Business Dashboard",desc:"Comprehensive management system",tags:["React","TypeScript"]}]},
+    process:{
+      ar:[{icon:"💬",title:"الاستشارة",desc:"نجلس معك لفهم فكرتك واحتياجاتك بالكامل"},{icon:"📋",title:"التخطيط",desc:"نضع خطة واضحة وجدولاً زمنياً دقيقاً"},{icon:"🎨",title:"التصميم",desc:"نصمم واجهات جذابة ونعرضها عليك للموافقة"},{icon:"⚙️",title:"التطوير",desc:"نبني المشروع بأعلى معايير الجودة والأداء"},{icon:"🚀",title:"التسليم",desc:"نطلق مشروعك ونوفر دعماً مستمراً بعد التسليم"}],
+      en:[{icon:"💬",title:"Consultation",desc:"We sit with you to fully understand your idea"},{icon:"📋",title:"Planning",desc:"We create a clear plan and precise timeline"},{icon:"🎨",title:"Design",desc:"We design interfaces and present them for approval"},{icon:"⚙️",title:"Development",desc:"We build the project with the highest quality standards"},{icon:"🚀",title:"Delivery",desc:"We launch your project and provide ongoing support"}]
+    },
+    testimonials:{
+      ar:[{text:"هايتك غيّرت وجه عملي التجاري كلياً. الموقع احترافي جداً وعملاؤنا يثنون عليه دائماً.",name:"أحمد الخالد",role:"صاحب متجر إلكتروني",avatar:"أ",stars:5},{text:"سلّموا المشروع قبل الموعد المحدد وبجودة فاقت توقعاتي. سأتعامل معهم حتماً مجدداً.",name:"سارة محمود",role:"مديرة مشاريع",avatar:"س",stars:5},{text:"تطبيق الموبايل حصل على تقييم ممتاز في المتاجر. يفهمون احتياجات العميل بشكل رائع.",name:"محمد عبد الله",role:"مؤسس شركة ناشئة",avatar:"م",stars:5},{text:"الدعم الفني ممتاز وسريع الاستجابة. أي مشكلة يحلونها فوراً.",name:"ليلى حسن",role:"طبيبة",avatar:"ل",stars:5},{text:"بنوا لنا متجراً متكاملاً بنظام دفع آمن. المبيعات ارتفعت بشكل ملحوظ بعد الإطلاق.",name:"خالد العمري",role:"صاحب متجر ملابس",avatar:"خ",stars:5},{text:"فريق محترف يعمل بشغف حقيقي. كنت على دراية كاملة بتقدم المشروع طوال الوقت.",name:"نور الدين",role:"مدير تسويق",avatar:"ن",stars:5}],
+      en:[{text:"HiTech completely transformed my business. The website is incredibly professional.",name:"Ahmed Al-Khalid",role:"E-Commerce Owner",avatar:"A",stars:5},{text:"Delivered ahead of schedule with quality that exceeded my expectations.",name:"Sara Mahmoud",role:"Project Manager",avatar:"S",stars:5},{text:"The mobile app received excellent ratings. They understand client needs perfectly.",name:"Mohammed Abdullah",role:"Startup Founder",avatar:"M",stars:5},{text:"Excellent and fast technical support. Any issue gets solved immediately.",name:"Layla Hassan",role:"Doctor",avatar:"L",stars:5},{text:"Sales increased significantly after launch. Thank you HiTech!",name:"Khalid Al-Omari",role:"Fashion Store Owner",avatar:"K",stars:5},{text:"A passionate team that kept me fully informed throughout the project.",name:"Nour Eddine",role:"Marketing Manager",avatar:"N",stars:5}]
+    },
+    products:{visible:true,ar:[],en:[]}
+  };
+
+  let D = DEFAULT;
+
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function safeUrl(url) { try{const u=new URL(url);return['http:','https:'].includes(u.protocol)?url:'';}catch{return '';} }
+
+  // ======= AUTH =======
+  async function doLogin() {
+    const pass = document.getElementById('l-pass').value;
+    const err = document.getElementById('login-err');
+    err.style.display = 'none';
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({password: pass})
+      });
+      const data = await res.json();
+      if(res.ok) {
+        const dr = await fetch('/api/data');
+        if(dr.ok) { const sd = await dr.json(); if(sd && sd.company) D = sd; }
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('admin-page').classList.add('active');
+        loadAllForms();
+        showToast('مرحباً! تم الدخول بنجاح ✓');
+      } else if(res.status === 429) {
+        err.textContent = `تم تجاوز عدد المحاولات. حاول بعد ${data.remaining} دقيقة.`;
+        err.style.display = 'block';
+      } else {
+        err.textContent = 'كلمة المرور غير صحيحة';
+        err.style.display = 'block';
+      }
+    } catch(e) {
+      err.textContent = 'تعذر الاتصال بالخادم. تحقق من الاتصال.';
+      err.style.display = 'block';
+    }
+  }
+  async function doLogout() {
+    await fetch('/api/auth/logout', {method:'POST'});
+    location.reload();
+  }
+  async function changePass() {
+    const old = document.getElementById('p-old').value;
+    const nw = document.getElementById('p-new').value;
+    const cf = document.getElementById('p-conf').value;
+    if(nw !== cf || nw.length < 8) { showToast('كلمة المرور الجديدة لا تتطابق أو قصيرة جداً (8 أحرف على الأقل)','#EF4444'); return; }
+    try {
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({oldPassword: old, newPassword: nw})
+      });
+      const data = await res.json();
+      if(res.ok) {
+        showToast('تم تغيير كلمة المرور بنجاح ✓');
+        document.getElementById('p-old').value=''; document.getElementById('p-new').value=''; document.getElementById('p-conf').value='';
+      } else {
+        showToast(data.error || 'فشل تغيير كلمة المرور','#EF4444');
+      }
+    } catch(e) {
+      showToast('تعذر الاتصال بالخادم','#EF4444');
+    }
+  }
+
+  // Check server session on load
+  (async function checkSession(){
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if(data.admin) {
+        // Load site data from server
+        const dr = await fetch('/api/data');
+        if(dr.ok) { const sd = await dr.json(); if(sd && sd.company) D = sd; }
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('admin-page').classList.add('active');
+        loadAllForms();
+      }
+    } catch(e) { /* stay on login page */ }
+  })();
+
+  // ======= SECTIONS =======
+  const SECTION_TITLES = {overview:'نظرة عامة',company:'معلومات الشركة',hero:'الصفحة الرئيسية',services:'الخدمات',process:'كيف نعمل',portfolio:'الأعمال',products:'أنظمة ومواقع للبيع',testimonials:'آراء العملاء',about:'عن الشركة',stats:'الإحصائيات',contact:'التواصل',texts:'النصوص',password:'تغيير كلمة المرور'};
+  function showSection(id) {
+    document.querySelectorAll('.section-page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.getElementById('sec-'+id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => { if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active'); });
+    document.getElementById('page-title').textContent = SECTION_TITLES[id] || id;
+  }
+
+  // ======= TABS =======
+  function switchTab(btn, showId) {
+    const parent = btn.closest('.section-page');
+    parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const sibIds = Array.from(parent.querySelectorAll('[id]')).map(e=>e.id).filter(id=>id.startsWith(showId.split('-')[0]+'-'));
+    sibIds.forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
+    const show = document.getElementById(showId);
+    if(show) show.style.display='block';
+  }
+
+  // ======= PROCESS =======
+  function loadProcess() { renderStepList('ar'); renderStepList('en'); }
+  function renderStepList(lang) {
+    const steps = D.process[lang] || [];
+    document.getElementById('proc-list-'+lang).innerHTML = steps.map((s,i) => `
+      <div class="list-item">
+        <div class="list-item-icon" style="font-size:22px;background:var(--card)">${esc(s.icon)}</div>
+        <div class="list-item-content"><div class="list-item-title">${i+1}. ${esc(s.title)}</div><div class="list-item-desc">${esc(s.desc)}</div></div>
+        <div class="list-item-actions">
+          <button class="btn btn-outline btn-sm btn-icon" onclick="editStep(${i},'${lang}')"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteStep(${i},'${lang}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('');
+  }
+  function openAddStep(lang) {
+    document.getElementById('step-edit-idx').value=-1; document.getElementById('step-edit-lang').value=lang;
+    document.getElementById('step-modal-title').textContent = lang==='ar'?'إضافة خطوة':'Add Step';
+    ['step-icon','step-title','step-desc'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('step-modal').classList.add('open');
+  }
+  function editStep(idx,lang) {
+    const s = D.process[lang][idx];
+    document.getElementById('step-edit-idx').value=idx; document.getElementById('step-edit-lang').value=lang;
+    document.getElementById('step-modal-title').textContent = lang==='ar'?'تعديل الخطوة':'Edit Step';
+    document.getElementById('step-icon').value=s.icon; document.getElementById('step-title').value=s.title; document.getElementById('step-desc').value=s.desc;
+    document.getElementById('step-modal').classList.add('open');
+  }
+  function saveStep() {
+    const idx=+document.getElementById('step-edit-idx').value;
+    const lang=document.getElementById('step-edit-lang').value;
+    const step={icon:v('step-icon')||'⚙️',title:v('step-title'),desc:v('step-desc')};
+    if(!step.title){showToast('أدخل عنوان الخطوة','#EF4444');return;}
+    if(!D.process[lang]) D.process[lang]=[];
+    if(idx===-1) D.process[lang].push(step); else D.process[lang][idx]=step;
+    renderStepList(lang); closeModal('step-modal'); saveAll();
+  }
+  function deleteStep(idx,lang) {
+    if(!confirm('حذف هذه الخطوة؟')) return;
+    D.process[lang].splice(idx,1); renderStepList(lang); saveAll();
+  }
+
+  // ======= TESTIMONIALS =======
+  function loadTestimonials() { renderTestiList('ar'); renderTestiList('en'); }
+  function renderTestiList(lang) {
+    if (!D.testimonials) D.testimonials = { ar: [], en: [] };
+    const reviews = D.testimonials[lang] || [];
+    document.getElementById('testi-list-'+lang).innerHTML = reviews.map((r,i) => `
+      <div class="list-item">
+        <div class="list-item-icon" style="background:linear-gradient(135deg,var(--primary),var(--secondary));color:#050B18;font-weight:800">${esc(r.avatar)}</div>
+        <div class="list-item-content">
+          <div class="list-item-title">${esc(r.name)} — <span style="color:var(--muted);font-weight:400">${esc(r.role)}</span></div>
+          <div class="list-item-desc" style="font-style:italic">"${esc(r.text.substring(0,80))}${r.text.length>80?'...':''}"</div>
+        </div>
+        <div class="list-item-actions">
+          <button class="btn btn-outline btn-sm btn-icon" onclick="editTesti(${i},'${lang}')"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteTesti(${i},'${lang}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('');
+  }
+  function openAddTesti(lang) {
+    document.getElementById('testi-edit-idx').value=-1; document.getElementById('testi-edit-lang').value=lang;
+    document.getElementById('testi-modal-title').textContent = lang==='ar'?'إضافة رأي':'Add Review';
+    ['testi-avatar','testi-name','testi-role','testi-text'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('testi-modal').classList.add('open');
+  }
+  function editTesti(idx,lang) {
+    const r=D.testimonials[lang][idx];
+    document.getElementById('testi-edit-idx').value=idx; document.getElementById('testi-edit-lang').value=lang;
+    document.getElementById('testi-modal-title').textContent = lang==='ar'?'تعديل الرأي':'Edit Review';
+    document.getElementById('testi-avatar').value=r.avatar; document.getElementById('testi-name').value=r.name;
+    document.getElementById('testi-role').value=r.role; document.getElementById('testi-text').value=r.text;
+    document.getElementById('testi-modal').classList.add('open');
+  }
+  function saveTesti() {
+    const idx=+document.getElementById('testi-edit-idx').value;
+    const lang=document.getElementById('testi-edit-lang').value;
+    const r={avatar:v('testi-avatar')||'؟',name:v('testi-name'),role:v('testi-role'),text:v('testi-text'),stars:5};
+    if(!r.name||!r.text){showToast('أدخل الاسم والنص','#EF4444');return;}
+    if(!D.testimonials) D.testimonials={ar:[],en:[]};
+    if(!D.testimonials[lang]) D.testimonials[lang]=[];
+    if(idx===-1) D.testimonials[lang].push(r); else D.testimonials[lang][idx]=r;
+    renderTestiList(lang); closeModal('testi-modal'); saveAll();
+  }
+  function deleteTesti(idx,lang) {
+    if(!confirm('حذف هذا الرأي؟')) return;
+    if(!D.testimonials || !D.testimonials[lang]) return;
+    D.testimonials[lang].splice(idx,1); renderTestiList(lang); saveAll();
+  }
+
+  // ======= SAVE =======
+  async function saveAll() {
+    collectCompany(); collectHero(); collectAbout(); collectStats(); collectContact(); collectTexts();
+    try {
+      const res = await fetch('/api/data', {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(D)
+      });
+      if(res.ok) {
+        showToast('تم حفظ جميع التغييرات بنجاح ✓');
+      } else {
+        const data = await res.json();
+        showToast(data.error || 'فشل الحفظ','#EF4444');
+      }
+    } catch(e) {
+      showToast('تعذر الاتصال بالخادم','#EF4444');
+    }
+    updateOverview();
+  }
+
+  // ======= LOAD FORMS =======
+  function loadAllForms() {
+    loadCompany(); loadHero(); loadServices(); loadProcess(); loadPortfolio(); loadProducts(); loadTestimonials(); loadAbout(); loadStats(); loadContact(); loadTexts(); updateOverview();
+  }
+
+  function loadCompany() {
+    const c = D.company;
+    const ids = {nameAr:'c-nameAr',nameEn:'c-nameEn',phone:'c-phone',whatsapp:'c-wa',email:'c-email',address:'c-addrAr',addressEn:'c-addrEn',facebook:'c-fb',instagram:'c-ig',tiktok:'c-tt',linkedin:'c-li'};
+    Object.entries(ids).forEach(([k,id]) => { const el=document.getElementById(id); if(el) el.value=c[k]||''; });
+    const sv = c.socialVisible || {};
+    ['facebook','instagram','tiktok','linkedin'].forEach(k => {
+      const el = document.getElementById('sv-'+k);
+      if(el) el.checked = sv[k] !== false;
+    });
+  }
+  function collectCompany() {
+    D.company.nameAr = v('c-nameAr'); D.company.nameEn = v('c-nameEn');
+    D.company.phone = v('c-phone'); D.company.whatsapp = v('c-wa'); D.company.email = v('c-email');
+    D.company.address = v('c-addrAr'); D.company.addressEn = v('c-addrEn');
+    D.company.facebook = v('c-fb'); D.company.instagram = v('c-ig'); D.company.tiktok = v('c-tt'); D.company.linkedin = v('c-li');
+    if(!D.company.socialVisible) D.company.socialVisible = {};
+    ['facebook','instagram','tiktok','linkedin'].forEach(k => {
+      const el = document.getElementById('sv-'+k);
+      if(el) D.company.socialVisible[k] = el.checked;
+    });
+    if(D.content.ar) D.content.ar['con.address'] = D.company.address;
+    if(D.content.en) D.content.en['con.address'] = D.company.addressEn;
+  }
+
+  function loadHero() {
+    const ar = D.content.ar || {}, en = D.content.en || {};
+    sv('h-badge-ar', ar['hero.badge']); sv('h-line1-ar', ar['hero.line1']); sv('h-line2-ar', ar['hero.line2']); sv('h-sub-ar', ar['hero.subtitle']); sv('h-cta1-ar', ar['hero.cta1']); sv('h-cta2-ar', ar['hero.cta2']);
+    sv('h-badge-en', en['hero.badge']); sv('h-line1-en', en['hero.line1']); sv('h-line2-en', en['hero.line2']); sv('h-sub-en', en['hero.subtitle']); sv('h-cta1-en', en['hero.cta1']); sv('h-cta2-en', en['hero.cta2']);
+  }
+  function collectHero() {
+    D.content.ar['hero.badge']=v('h-badge-ar'); D.content.ar['hero.line1']=v('h-line1-ar'); D.content.ar['hero.line2']=v('h-line2-ar'); D.content.ar['hero.subtitle']=v('h-sub-ar'); D.content.ar['hero.cta1']=v('h-cta1-ar'); D.content.ar['hero.cta2']=v('h-cta2-ar');
+    D.content.en['hero.badge']=v('h-badge-en'); D.content.en['hero.line1']=v('h-line1-en'); D.content.en['hero.line2']=v('h-line2-en'); D.content.en['hero.subtitle']=v('h-sub-en'); D.content.en['hero.cta1']=v('h-cta1-en'); D.content.en['hero.cta2']=v('h-cta2-en');
+  }
+
+  function loadServices() {
+    renderSvcList('ar'); renderSvcList('en');
+  }
+  function renderSvcList(lang) {
+    const svcs = D.services[lang] || [];
+    document.getElementById('svcs-list-'+lang).innerHTML = svcs.map((s,i) => `
+      <div class="list-item" style="${s.visible===false?'opacity:0.45':''}">
+        <div class="list-item-icon" style="overflow:hidden;padding:0;background:var(--card2)">${s.image&&safeUrl(s.image)?`<img src="${esc(safeUrl(s.image))}" style="width:100%;height:100%;object-fit:cover">`:`<i class="fas ${esc(s.icon)}"></i>`}</div>
+        <div class="list-item-content"><div class="list-item-title">${esc(s.title)}${s.visible===false?' <span style="font-size:11px;color:var(--muted);font-weight:400">(مخفي)</span>':''}</div><div class="list-item-desc">${esc(s.desc)}</div></div>
+        <div class="list-item-actions">
+          <button class="btn btn-outline btn-sm btn-icon" title="${s.visible===false?'إظهار':'إخفاء'}" onclick="toggleSvc(${i},'${lang}')"><i class="fas ${s.visible===false?'fa-eye':'fa-eye-slash'}"></i></button>
+          <button class="btn btn-outline btn-sm btn-icon" onclick="editService(${i},'${lang}')"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteService(${i},'${lang}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('');
+  }
+  function toggleSvc(idx, lang) {
+    const s = D.services[lang][idx];
+    s.visible = (s.visible === false) ? true : false;
+    renderSvcList(lang); saveAll();
+  }
+  function openAddService(lang) {
+    document.getElementById('svc-edit-idx').value = -1;
+    document.getElementById('svc-edit-lang').value = lang;
+    document.getElementById('svc-modal-title').textContent = lang==='ar' ? 'إضافة خدمة' : 'Add Service';
+    document.getElementById('svc-icon').value=''; document.getElementById('svc-title').value=''; document.getElementById('svc-desc').value='';
+    document.getElementById('svc-image-url').value=''; previewSvcImg('');
+    document.getElementById('svc-modal').classList.add('open');
+  }
+  function editService(idx, lang) {
+    const s = D.services[lang][idx];
+    document.getElementById('svc-edit-idx').value = idx;
+    document.getElementById('svc-edit-lang').value = lang;
+    document.getElementById('svc-modal-title').textContent = lang==='ar' ? 'تعديل الخدمة' : 'Edit Service';
+    document.getElementById('svc-icon').value = s.icon;
+    document.getElementById('svc-title').value = s.title;
+    document.getElementById('svc-desc').value = s.desc;
+    document.getElementById('svc-image-url').value = s.image||''; previewSvcImg(s.image||'');
+    document.getElementById('svc-modal').classList.add('open');
+  }
+  function saveService() {
+    const idx = +document.getElementById('svc-edit-idx').value;
+    const lang = document.getElementById('svc-edit-lang').value;
+    const existing = (idx !== -1 && D.services[lang]) ? D.services[lang][idx] : {};
+    const svc = {icon:v('svc-icon')||'fa-cog', image:document.getElementById('svc-image-url').value.trim()||existing.image||'', title:v('svc-title'), desc:v('svc-desc'), visible: existing.visible !== false};
+    if(!svc.title) { showToast('أدخل عنوان الخدمة','#EF4444'); return; }
+    if(!D.services[lang]) D.services[lang]=[];
+    if(idx===-1) D.services[lang].push(svc); else D.services[lang][idx]=svc;
+    renderSvcList(lang); closeModal('svc-modal'); saveAll();
+  }
+  function deleteService(idx, lang) {
+    if(!confirm('هل تريد حذف هذه الخدمة؟')) return;
+    D.services[lang].splice(idx,1); renderSvcList(lang); saveAll();
+  }
+
+  function loadPortfolio() { renderPortList('ar'); renderPortList('en'); }
+  function renderPortList(lang) {
+    const ps = D.portfolio[lang] || [];
+    document.getElementById('port-list-'+lang).innerHTML = ps.map((p,i) => `
+      <div class="list-item" style="${p.visible===false?'opacity:0.45':''}">
+        <div class="list-item-icon" style="overflow:hidden;padding:0;background:var(--card2)">${p.image&&safeUrl(p.image)?`<img src="${esc(safeUrl(p.image))}" style="width:100%;height:100%;object-fit:cover">`:esc(p.emoji||'📦')}</div>
+        <div class="list-item-content"><div class="list-item-title">${esc(p.title)}${p.visible===false?' <span style="font-size:11px;color:var(--muted);font-weight:400">(مخفي)</span>':''}</div><div class="list-item-desc">${esc(p.cat)} — ${esc(p.desc)}</div></div>
+        <div class="list-item-actions">
+          <button class="btn btn-outline btn-sm btn-icon" title="${p.visible===false?'إظهار':'إخفاء'}" onclick="togglePort(${i},'${lang}')"><i class="fas ${p.visible===false?'fa-eye':'fa-eye-slash'}"></i></button>
+          <button class="btn btn-outline btn-sm btn-icon" onclick="editProject(${i},'${lang}')"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteProject(${i},'${lang}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('');
+  }
+  function togglePort(idx, lang) {
+    const p = D.portfolio[lang][idx];
+    p.visible = (p.visible === false) ? true : false;
+    renderPortList(lang); saveAll();
+  }
+  function previewPortImg(url) {
+    const preview = document.getElementById('port-img-preview');
+    const img = document.getElementById('port-img-preview-img');
+    if(url.trim()) { img.src = url.trim(); preview.style.display='block'; }
+    else { preview.style.display='none'; }
+  }
+  function previewSvcImg(url) {
+    const preview = document.getElementById('svc-img-preview');
+    const img = document.getElementById('svc-img-preview-img');
+    if(url.trim()) { img.src = url.trim(); preview.style.display='block'; }
+    else { preview.style.display='none'; }
+  }
+  function openAddPort(lang) {
+    document.getElementById('port-edit-idx').value=-1; document.getElementById('port-edit-lang').value=lang;
+    document.getElementById('port-modal-title').textContent = lang==='ar' ? 'إضافة مشروع' : 'Add Project';
+    ['port-cat','port-title','port-desc','port-tags','port-url','port-image-url','port-emoji'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('port-show-url').checked = false;
+    document.getElementById('port-img-preview').style.display='none';
+    document.getElementById('port-modal').classList.add('open');
+  }
+  function editProject(idx, lang) {
+    const p = D.portfolio[lang][idx];
+    document.getElementById('port-edit-idx').value=idx; document.getElementById('port-edit-lang').value=lang;
+    document.getElementById('port-modal-title').textContent = lang==='ar' ? 'تعديل المشروع' : 'Edit Project';
+    document.getElementById('port-cat').value=p.cat;
+    document.getElementById('port-title').value=p.title; document.getElementById('port-desc').value=p.desc;
+    document.getElementById('port-tags').value=p.tags.join(', ');
+    document.getElementById('port-url').value=p.url||'';
+    document.getElementById('port-show-url').checked=!!p.showUrl;
+    document.getElementById('port-image-url').value=p.image||'';
+    document.getElementById('port-emoji').value=p.emoji||'';
+    previewPortImg(p.image||'');
+    document.getElementById('port-modal').classList.add('open');
+  }
+  function saveProject() {
+    const idx = +document.getElementById('port-edit-idx').value;
+    const lang = document.getElementById('port-edit-lang').value;
+    const existing = (idx !== -1 && D.portfolio[lang]) ? D.portfolio[lang][idx] : {};
+    const proj = {
+      image: document.getElementById('port-image-url').value.trim() || existing.image || '',
+      emoji: v('port-emoji') || existing.emoji || '📦',
+      cat:v('port-cat'), title:v('port-title'), desc:v('port-desc'),
+      tags:v('port-tags').split(',').map(t=>t.trim()).filter(Boolean),
+      url: document.getElementById('port-url').value.trim(),
+      showUrl: document.getElementById('port-show-url').checked,
+      visible: existing.visible !== false
+    };
+    if(!proj.title) { showToast('أدخل اسم المشروع','#EF4444'); return; }
+    if(!D.portfolio[lang]) D.portfolio[lang]=[];
+    if(idx===-1) D.portfolio[lang].push(proj); else D.portfolio[lang][idx]=proj;
+    renderPortList(lang); closeModal('port-modal'); saveAll();
+  }
+  function deleteProject(idx, lang) {
+    if(!confirm('هل تريد حذف هذا المشروع؟')) return;
+    D.portfolio[lang].splice(idx,1); renderPortList(lang); saveAll();
+  }
+
+  // ======= PRODUCTS FOR SALE =======
+  function loadProducts() {
+    if (!D.products) D.products = { visible: true, ar: [], en: [] };
+    document.getElementById('products-visible-chk').checked = D.products.visible !== false;
+    renderProdList('ar');
+    renderProdList('en');
+  }
+  function renderProdList(lang) {
+    const ps = D.products[lang] || [];
+    document.getElementById('prod-list-'+lang).innerHTML = ps.length ? ps.map((p,i) => `
+      <div class="list-item" style="${p.visible===false?'opacity:0.45':''}">
+        <div class="list-item-icon" style="overflow:hidden;padding:0;background:var(--card2)">${p.image&&safeUrl(p.image)?`<img src="${esc(safeUrl(p.image))}" style="width:100%;height:100%;object-fit:cover">`:esc(p.emoji||'📦')}</div>
+        <div class="list-item-content">
+          <div class="list-item-title">${esc(p.title)}${p.visible===false?'<span style="color:var(--muted);font-size:11px;margin-right:8px">(مخفي)</span>':''}</div>
+          <div class="list-item-sub">${esc(p.cat)}${p.price?' · <span style="color:var(--success);font-weight:700">'+esc(p.price)+' '+esc(p.currency||'')+'</span>':''}</div>
+        </div>
+        <div class="list-item-actions">
+          <button class="btn btn-sm" style="background:${p.visible===false?'rgba(56,189,248,.1)':'rgba(56,189,248,.1)'};color:${p.visible===false?'var(--muted)':'var(--primary)'};border:1px solid var(--border)" title="${p.visible===false?'إظهار':'إخفاء'}" onclick="toggleProd(${i},'${lang}')"><i class="fas fa-eye${p.visible===false?'-slash':''}"></i></button>
+          <button class="btn btn-sm btn-outline" onclick="editProduct(${i},'${lang}')"><i class="fas fa-pen"></i></button>
+          <button class="btn btn-sm btn-danger" onclick="deleteProd(${i},'${lang}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('') : '<p style="color:var(--muted);text-align:center;padding:32px 0">لا توجد منتجات مضافة بعد</p>';
+  }
+  function toggleProductsSection() {
+    if (!D.products) D.products = { visible: true, ar: [], en: [] };
+    D.products.visible = document.getElementById('products-visible-chk').checked;
+    saveAll();
+  }
+  function toggleProd(idx, lang) {
+    const p = D.products[lang][idx];
+    p.visible = (p.visible === false) ? true : false;
+    renderProdList(lang); saveAll();
+  }
+  function previewProdImg(url) {
+    const preview = document.getElementById('prod-img-preview');
+    const img = document.getElementById('prod-img-preview-img');
+    const safe = safeUrl(url);
+    if (safe) { img.src = safe; preview.style.display = 'block'; }
+    else { preview.style.display = 'none'; img.src = ''; }
+  }
+  function openAddProd(lang) {
+    document.getElementById('prod-edit-idx').value = -1;
+    document.getElementById('prod-edit-lang').value = lang;
+    document.getElementById('prod-modal-title').textContent = lang==='ar' ? 'إضافة منتج' : 'Add Product';
+    ['prod-cat','prod-title','prod-desc','prod-tags','prod-url','prod-image-url','prod-emoji','prod-price','prod-currency'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('prod-show-url').checked = false;
+    document.getElementById('prod-img-preview').style.display = 'none';
+    document.getElementById('prod-modal').classList.add('open');
+  }
+  function editProduct(idx, lang) {
+    const p = D.products[lang][idx];
+    document.getElementById('prod-edit-idx').value = idx;
+    document.getElementById('prod-edit-lang').value = lang;
+    document.getElementById('prod-modal-title').textContent = lang==='ar' ? 'تعديل المنتج' : 'Edit Product';
+    document.getElementById('prod-cat').value = p.cat || '';
+    document.getElementById('prod-title').value = p.title || '';
+    document.getElementById('prod-desc').value = p.desc || '';
+    document.getElementById('prod-tags').value = (p.tags||[]).join(', ');
+    document.getElementById('prod-url').value = p.url || '';
+    document.getElementById('prod-image-url').value = p.image || '';
+    document.getElementById('prod-emoji').value = p.emoji || '';
+    document.getElementById('prod-price').value = p.price || '';
+    document.getElementById('prod-currency').value = p.currency || '';
+    document.getElementById('prod-show-url').checked = !!p.showUrl;
+    previewProdImg(p.image || '');
+    document.getElementById('prod-modal').classList.add('open');
+  }
+  function saveProduct() {
+    const idx = +document.getElementById('prod-edit-idx').value;
+    const lang = document.getElementById('prod-edit-lang').value;
+    const tagsRaw = document.getElementById('prod-tags').value;
+    const prod = {
+      emoji: document.getElementById('prod-emoji').value.trim() || '📦',
+      image: document.getElementById('prod-image-url').value.trim(),
+      cat: document.getElementById('prod-cat').value.trim(),
+      title: document.getElementById('prod-title').value.trim(),
+      desc: document.getElementById('prod-desc').value.trim(),
+      tags: tagsRaw ? tagsRaw.split(',').map(t=>t.trim()).filter(Boolean) : [],
+      price: document.getElementById('prod-price').value.trim(),
+      currency: document.getElementById('prod-currency').value.trim() || '₪',
+      url: document.getElementById('prod-url').value.trim(),
+      showUrl: document.getElementById('prod-show-url').checked,
+      visible: true
+    };
+    if (!prod.title) { showToast('أدخل اسم المنتج أو النظام','#EF4444'); return; }
+    if (!D.products) D.products = { visible: true, ar: [], en: [] };
+    if (!D.products[lang]) D.products[lang] = [];
+    if (idx === -1) D.products[lang].push(prod); else D.products[lang][idx] = prod;
+    renderProdList(lang); closeModal('prod-modal'); saveAll();
+  }
+  function deleteProd(idx, lang) {
+    if (!confirm('هل تريد حذف هذا المنتج؟')) return;
+    D.products[lang].splice(idx, 1); renderProdList(lang); saveAll();
+  }
+
+  function loadAbout() {
+    const ar = D.content.ar || {}, en = D.content.en || {};
+    sv('about-desc-ar', ar['about.desc']); sv('about-desc-en', en['about.desc']);
+    renderPoints('ar'); renderPoints('en');
+  }
+  function renderPoints(lang) {
+    const pts = D.aboutPoints[lang] || [];
+    document.getElementById('pts-list-'+lang).innerHTML = pts.map((p,i) => `
+      <div class="list-item" style="padding:10px 16px;margin-bottom:8px">
+        <i class="fas fa-grip-lines" style="color:var(--muted)"></i>
+        <input value="${esc(p)}" class="fg" style="margin:0;flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font);font-size:14px;outline:none" onchange="updatePoint(${i},'${lang}',this.value)">
+        <button class="btn btn-danger btn-sm btn-icon" onclick="deletePoint(${i},'${lang}')"><i class="fas fa-times"></i></button>
+      </div>`).join('');
+  }
+  function addPoint(lang) { D.aboutPoints[lang] = D.aboutPoints[lang] || []; D.aboutPoints[lang].push(lang==='ar'?'نقطة جديدة':'New point'); renderPoints(lang); }
+  function updatePoint(i,lang,val) { D.aboutPoints[lang][i]=val; }
+  function deletePoint(i,lang) { D.aboutPoints[lang].splice(i,1); renderPoints(lang); }
+  function collectAbout() {
+    D.content.ar['about.desc'] = v('about-desc-ar');
+    D.content.en['about.desc'] = v('about-desc-en');
+  }
+
+  function loadStats() {
+    ['ar','en'].forEach(lang => {
+      const stats = D.stats[lang] || [];
+      document.getElementById('stats-form-'+lang).innerHTML = stats.map((s,i) => `
+        <div style="display:grid;grid-template-columns:1fr 80px 2fr;gap:12px;align-items:end;margin-bottom:16px">
+          <div class="fg" style="margin:0"><label>الرقم</label><input type="number" id="st-n-${lang}-${i}" value="${esc(String(s.n||''))}"></div>
+          <div class="fg" style="margin:0"><label>اللاحقة</label><input id="st-s-${lang}-${i}" value="${esc(s.s||'')}" maxlength="2"></div>
+          <div class="fg" style="margin:0"><label>التسمية</label><input id="st-l-${lang}-${i}" value="${esc(s.l||'')}"></div>
+        </div>`).join('');
+    });
+  }
+  function collectStats() {
+    ['ar','en'].forEach(lang => {
+      D.stats[lang] = D.stats[lang].map((s,i) => ({n:+v(`st-n-${lang}-${i}`)||s.n, s:v(`st-s-${lang}-${i}`)||s.s, l:v(`st-l-${lang}-${i}`)||s.l}));
+    });
+  }
+
+  function loadContact() {
+    const ar = D.content.ar || {}, en = D.content.en || {};
+    sv('con-titlehl-ar', ar['con.titlehl']); sv('con-sub-ar', ar['con.subtitle']);
+    sv('con-titlehl-en', en['con.titlehl']); sv('con-sub-en', en['con.subtitle']);
+    // contact info fields
+    const c = D.company || {};
+    sv('con-phone', c.phone); sv('con-wa', c.whatsapp); sv('con-email', c.email);
+    sv('con-addr-ar', c.address); sv('con-addr-en', c.addressEn);
+  }
+  function collectContact() {
+    D.content.ar['con.titlehl'] = v('con-titlehl-ar'); D.content.ar['con.subtitle'] = v('con-sub-ar');
+    D.content.en['con.titlehl'] = v('con-titlehl-en'); D.content.en['con.subtitle'] = v('con-sub-en');
+    // sync contact info back to company
+    if(v('con-phone')) D.company.phone = v('con-phone');
+    if(v('con-wa')) D.company.whatsapp = v('con-wa');
+    if(v('con-email') !== undefined) D.company.email = v('con-email');
+    if(v('con-addr-ar')) { D.company.address = v('con-addr-ar'); D.content.ar['con.address'] = v('con-addr-ar'); }
+    if(v('con-addr-en')) { D.company.addressEn = v('con-addr-en'); D.content.en['con.address'] = v('con-addr-en'); }
+  }
+
+  function loadTexts() {
+    ['ar','en'].forEach(lang => {
+      const cnt = D.content[lang] || {};
+      const labels = {'nav.services':lang==='ar'?'قائمة: الخدمات':'Menu: Services','nav.portfolio':lang==='ar'?'قائمة: الأعمال':'Menu: Portfolio','nav.about':lang==='ar'?'قائمة: عنّا':'Menu: About','nav.contact':lang==='ar'?'قائمة: تواصل':'Menu: Contact','nav.cta':lang==='ar'?'زر الرأس':'Nav Button','svc.more':lang==='ar'?'زر "اعرف أكثر"':'"Learn More" Button','about.cta':lang==='ar'?'زر قسم عنّا':'About Section Button','foot.desc':lang==='ar'?'وصف الفوتر':'Footer Description','foot.copy':lang==='ar'?'حقوق النشر':'Copyright'};
+      document.getElementById('texts-form-'+lang).innerHTML = Object.entries(labels).map(([key,label]) =>
+        `<div class="fg"><label>${label}</label><input id="txt-${lang}-${key.replace(/\./g,'-')}" value="${esc(cnt[key]||'')}"></div>`).join('');
+    });
+  }
+  function collectTexts() {
+    ['ar','en'].forEach(lang => {
+      ['nav.services','nav.portfolio','nav.about','nav.contact','nav.cta','svc.more','about.cta','foot.desc','foot.copy'].forEach(key => {
+        const el = document.getElementById('txt-'+lang+'-'+key.replace(/\./g,'-'));
+        if(el && el.value) D.content[lang][key] = el.value;
+      });
+    });
+  }
+
+  function updateOverview() {
+    document.getElementById('ov-svcs').textContent = (D.services.ar||[]).length;
+    document.getElementById('ov-ports').textContent = (D.portfolio.ar||[]).length;
+    document.getElementById('ov-prods').textContent = (D.products && D.products.ar ? D.products.ar.length : 0);
+  }
+
+  // ======= MODAL =======
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // ======= TOAST =======
+  function showToast(msg, color='#34D399') {
+    const t = document.getElementById('toast');
+    t.textContent = ' '+msg;
+    t.insertAdjacentHTML('afterbegin','<i class="fas fa-check-circle"></i>');
+    t.style.background = color;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ======= HELPERS =======
+  function v(id) { const el=document.getElementById(id); return el ? el.value.trim() : ''; }
+  function sv(id, val) { const el=document.getElementById(id); if(el && val!==undefined) el.value=val||''; }
+</script>
+</body>
+</html>

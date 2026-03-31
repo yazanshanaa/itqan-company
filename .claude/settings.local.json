@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"key occurrences \\(should be >= 4\\)\")",
+      "Bash(start \"c:\\\\Users\\\\YAZAN\\\\Downloads\\\\hitech-website\\\\index.html\")",
+      "Bash(sed -i 's/HiTech/Itqan/g' README.md)",
+      "Bash(sed -i 's/hitech2024/itqan2024/g' README.md)",
+      "Bash(sed -i 's/hitech-website/itqan-website/g' README.md)",
+      "Bash(__NEW_LINE_038c2e6aaa0169b6__ echo:*)",
+      "Read(//c/Users/YAZAN/Downloads/**)",
+      "Bash(node -e \"require\\(''bcryptjs''\\).hash\\(''itqan2024'',10\\).then\\(h=>{require\\(''fs''\\).writeFileSync\\(''c:/Users/YAZAN/Downloads/itqan company/data/password.txt'',h\\);console.log\\(''Hash written:'',h\\)}\\)\")",
+      "Bash(npm install:*)",
+      "Bash(node -e \"require\\(''bcryptjs''\\).hash\\(''itqan2024'',10\\).then\\(h=>{require\\(''fs''\\).writeFileSync\\(''data/password.txt'',h\\);console.log\\(''Hash:'',h\\)}\\)\")",
+      "Bash(node -e \":*)",
+      "Bash(curl -s http://localhost:3000/api/data)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(TEST_PASS=itqan2024 node test/qa.js)",
+      "Bash(node server.js)",
+      "Bash(curl -s http://localhost:3000/api/auth/me)",
+      "Bash(curl -s https://api.cdnjs.com/libraries/font-awesome/6.5.0?fields=sri)",
+      "Bash(node -e \"const c=[];process.stdin.on\\(''''data'''',x=>c.push\\(x\\)\\);process.stdin.on\\(''''end'''',\\(\\)=>{const d=JSON.parse\\(Buffer.concat\\(c\\)\\);const f=d.sri&&d.sri[''''css/all.min.css''''];console.log\\(''''SRI:'''',f\\);}\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(find 'c:/Users/YAZAN/Downloads/itqan company' -not -path */node_modules/* -type d)",
+      "Bash(npx playwright:*)",
+      "Bash(node -e \"const c = require\\(''./playwright.config.js''\\); console.log\\(''testDir:'', c.testDir, ''| workers:'', c.workers, ''| webServer cmd:'', c.webServer?.command\\)\")",
+      "Bash(grep -rn \"admin\\\\.html\" \"c:/Users/YAZAN/Downloads/itqan company/\" --exclude-dir=node_modules --include=\"*.{js,html,json,md}\")",
+      "Bash(node -e \"try{JSON.parse\\(require\\(''fs''\\).readFileSync\\(''data/site.json'',''utf8''\\)\\);console.log\\(''site.json: OK''\\);}catch\\(e\\){console.error\\(''ERROR:'',e.message\\);}\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\YAZAN\\Downloads\\itqan company"
+    ]
+  }
+}
