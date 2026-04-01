@@ -1,8 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const path = require('path');
 const getClientIp = require('./lib/getClientIp');
+const { seedDatabase } = require('./lib/seed');
 
 // Fail fast if SESSION_SECRET is missing or weak
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
@@ -13,8 +15,8 @@ if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Trust proxy when behind Nginx/reverse proxy
-if (process.env.BEHIND_PROXY === 'true') app.set('trust proxy', 1);
+// Trust proxy when behind reverse proxy (Vercel, Nginx, etc.)
+if (process.env.BEHIND_PROXY === 'true' || process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 
 // Security headers
 app.use((req, res, next) => {
@@ -48,13 +50,21 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: '1mb' }));
 
+// Initialize session store with MongoDB
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    dbName: 'itqan',
+    collectionName: 'sessions',
+    touchAfter: 24 * 3600, // lazy session update in seconds
+    crypto: { secret: process.env.SESSION_SECRET },
+  }),
   cookie: {
     httpOnly: true,
-    sameSite: 'strict',
+    sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 2 * 60 * 60 * 1000  // 2 hours
   }
@@ -105,4 +115,17 @@ app.use('/api/data', require('./routes/data'));
 app.use('/api/contact', require('./routes/contact'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(PORT, () => console.log(`Itqan server running on http://localhost:${PORT}`));
+// Initialize database and seed if needed
+const initPromise = seedDatabase().catch(err => {
+  console.error('Failed to seed database:', err);
+});
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  initPromise.then(() => {
+    app.listen(PORT, () => console.log(`Itqan server running on http://localhost:${PORT}`));
+  });
+}
+
+// Export for Vercel serverless
+module.exports = app;
