@@ -1,11 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const fs = require('fs');
-const path = require('path');
 const getClientIp = require('../lib/getClientIp');
+const { getDb } = require('../lib/db');
 
 const router = express.Router();
-const PASS_FILE = path.join(__dirname, '../data/password.txt');
 
 // In-memory IP lockout: { ip: { attempts, lockedUntil } }
 const lockouts = new Map();
@@ -59,8 +57,18 @@ router.post('/login', async (req, res) => {
 
   let hash;
   try {
-    hash = fs.readFileSync(PASS_FILE, 'utf8').trim();
-  } catch {
+    const db = await getDb();
+    const settingsCollection = db.collection('settings');
+
+    // Try to get password hash from MongoDB first, fall back to env var
+    const settingsDoc = await settingsCollection.findOne({ _id: 'adminPassword' });
+    hash = settingsDoc?.hash || process.env.ADMIN_PASS_HASH;
+
+    if (!hash) {
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
+  } catch (error) {
+    console.error('Error retrieving password hash:', error);
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
@@ -97,17 +105,46 @@ router.post('/change-password', requireAuth, async (req, res) => {
 
   let hash;
   try {
-    hash = fs.readFileSync(PASS_FILE, 'utf8').trim();
-  } catch {
+    const db = await getDb();
+    const settingsCollection = db.collection('settings');
+
+    // Try to get password hash from MongoDB first, fall back to env var
+    const settingsDoc = await settingsCollection.findOne({ _id: 'adminPassword' });
+    hash = settingsDoc?.hash || process.env.ADMIN_PASS_HASH;
+
+    if (!hash) {
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
+  } catch (error) {
+    console.error('Error retrieving password hash:', error);
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
   const ok = await bcrypt.compare(oldPassword, hash);
   if (!ok) return res.status(401).json({ error: 'Old password is incorrect' });
 
-  const newHash = await bcrypt.hash(newPassword, 10);
-  fs.writeFileSync(PASS_FILE, newHash);
-  res.json({ ok: true });
+  try {
+    const newHash = await bcrypt.hash(newPassword, 10);
+    const db = await getDb();
+    const settingsCollection = db.collection('settings');
+
+    // Update or create the password hash in MongoDB
+    await settingsCollection.updateOne(
+      { _id: 'adminPassword' },
+      {
+        $set: {
+          hash: newHash,
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true }
+    );
+
+    res.json({ ok: true });
+  } catch (error) {
+    console.error('Error updating password hash:', error);
+    res.status(500).json({ error: 'Could not update password' });
+  }
 });
 
 module.exports = router;
