@@ -2,14 +2,26 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const { requireAuth } = require('./auth');
+const { getDb } = require('../lib/db');
 
 const router = express.Router();
 const DATA_FILE = path.join(__dirname, '../data/site.json');
 
 // GET /api/data — public (strips company.email); authenticated admin gets the full record
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const raw = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const db = await getDb();
+    const siteDataCollection = db.collection('siteData');
+
+    // Try to get data from MongoDB first
+    let siteDataDoc = await siteDataCollection.findOne({ _id: 'site' });
+    let raw = siteDataDoc?.data;
+
+    // Fall back to file if not in MongoDB
+    if (!raw) {
+      raw = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    }
+
     // Strip email from public response to prevent scraping.
     // Skip the strip when the request comes from an authenticated admin session
     // so that saveAll() in admin.html never overwrites email with an empty string.
@@ -18,13 +30,14 @@ router.get('/', (req, res) => {
       raw.company = safeCompany;
     }
     res.json(raw);
-  } catch {
+  } catch (error) {
+    console.error('Error reading site data:', error);
     res.status(500).json({ error: 'Could not read site data' });
   }
 });
 
 // PUT /api/data — requires admin session
-router.put('/', requireAuth, (req, res) => {
+router.put('/', requireAuth, async (req, res) => {
   const body = req.body;
   // Validate top-level structure
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -47,14 +60,30 @@ router.put('/', requireAuth, (req, res) => {
       }
     }
   }
+
   try {
     const json = JSON.stringify(body, null, 2);
     if (json.length > 500000) {
       return res.status(400).json({ error: 'Data too large' });
     }
-    fs.writeFileSync(DATA_FILE, json);
+
+    // Save to MongoDB
+    const db = await getDb();
+    const siteDataCollection = db.collection('siteData');
+    await siteDataCollection.updateOne(
+      { _id: 'site' },
+      {
+        $set: {
+          data: body,
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true }
+    );
+
     res.json({ ok: true });
-  } catch {
+  } catch (error) {
+    console.error('Error saving site data:', error);
     res.status(500).json({ error: 'Could not save site data' });
   }
 });
