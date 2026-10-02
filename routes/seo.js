@@ -60,8 +60,10 @@ function toEnglish(html) {
   }
   let strings = {};
   try { strings = readCached(DATA_FILE, JSON.parse).content.en || {}; } catch { /* JS renders them anyway */ }
-  return html.replace(/(<(\w+)\b[^>]*\sdata-key="([^"]+)"[^>]*>)[\s\S]*?(<\/\2>)/g,
-    (m, open, tag, key, close) => (strings[key] ? open + escText(strings[key]) + close : m));
+  // Markup only: the inline script has data-key templates of its own that must stay intact
+  return html.split(/(<script\b[\s\S]*?<\/script>)/).map((part, i) => (i % 2 ? part :
+    part.replace(/(<(\w+)\b[^>]*\sdata-key="([^"]+)"[^>]*>)[\s\S]*?(<\/\2>)/g,
+      (m, open, tag, key, close) => (strings[key] ? open + escText(strings[key]) + close : m)))).join('');
 }
 
 function renderIndex(req, lang) {
@@ -78,9 +80,10 @@ router.get(['/', '/index.html'], (req, res) => {
   res.type('html').send(renderIndex(req, 'ar'));
 });
 
-// Express routing is not strict, so '/en' also matches '/en/': branch on the slash
+// Express routing is neither strict nor case-sensitive: '/en', '/EN/', ... all land here,
+// and everything but the exact canonical '/en/' is redirected to it
 router.get('/en', (req, res) => {
-  if (!req.path.endsWith('/')) return res.redirect(301, '/en/' + req.originalUrl.slice(req.path.length));
+  if (req.path !== '/en/') return res.redirect(301, '/en/' + req.originalUrl.slice(req.path.length));
   res.type('html').send(renderIndex(req, 'en'));
 });
 
@@ -88,6 +91,8 @@ router.get('/robots.txt', (req, res) => {
   res.type('text/plain').send(
     'User-agent: *\n' +
     'Allow: /\n' +
+    // The page renders from /api/data; crawlers must be able to fetch it to see real content
+    'Allow: /api/data\n' +
     'Disallow: /api/\n\n' +
     `Sitemap: ${siteUrl(req)}/sitemap.xml\n`
   );
@@ -102,8 +107,8 @@ router.get('/sitemap.xml', (req, res) => {
   res.type('application/xml').send(
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
-    `  <url><loc>${base}/</loc>${alternates}<changefreq>monthly</changefreq><priority>1.0</priority></url>\n` +
-    `  <url><loc>${base}/en/</loc>${alternates}<changefreq>monthly</changefreq><priority>0.8</priority></url>\n` +
+    `  <url><loc>${base}/</loc><changefreq>monthly</changefreq><priority>1.0</priority>${alternates}</url>\n` +
+    `  <url><loc>${base}/en/</loc><changefreq>monthly</changefreq><priority>0.8</priority>${alternates}</url>\n` +
     '</urlset>\n'
   );
 });
