@@ -781,7 +781,10 @@
     const parent = btn.closest('.section-page');
     parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    const sibIds = Array.from(parent.querySelectorAll('[id]')).map(e=>e.id).filter(id=>id.startsWith(showId.split('-')[0]+'-'));
+    // Only the tab panels (<prefix>-ar / <prefix>-en); a plain prefix match also hid the
+    // lists inside them (e.g. svcs-list-en), leaving the tab empty after a switch.
+    const prefix = showId.slice(0, showId.lastIndexOf('-'));
+    const sibIds = [prefix+'-ar', prefix+'-en'];
     sibIds.forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
     const show = document.getElementById(showId);
     if(show) show.style.display='block';
