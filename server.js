@@ -113,7 +113,19 @@ app.use('/api/contact', (req, res, next) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/data', require('./routes/data'));
 app.use('/api/contact', require('./routes/contact'));
-app.use(express.static(path.join(__dirname, 'public')));
+// Express 4's mime table predates AVIF
+express.static.mime.define({ 'image/avif': ['avif'] });
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders(res, filePath) {
+    // Font files carry a version in their name, so they can be cached forever.
+    // Images keep stable names, so cache them for a week and revalidate in the background.
+    if (/[\\/]fonts[\\/]/.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    } else if (/\.(png|jpe?g|webp|avif|svg|ico)$/i.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+    }
+  }
+}));
 
 // Initialize database and seed if needed
 const initPromise = seedDatabase().catch(err => {
