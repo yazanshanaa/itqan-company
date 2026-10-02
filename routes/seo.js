@@ -68,7 +68,8 @@ function toEnglish(html) {
 
 function renderIndex(req, lang) {
   const base = siteUrl(req);
-  let html = readCached(INDEX_FILE).replace(SITE_URL_TOKEN, base);
+  // Replacer function: a `$` in SITE_URL must never act as a replacement pattern
+  let html = readCached(INDEX_FILE).replace(SITE_URL_TOKEN, () => base);
   const arTitle = (html.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
   // Both titles ride along so the language toggle can update the tab title
   html = html.replace('<html lang="ar" dir="rtl" id="html-root">',
