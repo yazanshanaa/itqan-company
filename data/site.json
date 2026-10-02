@@ -1,7 +1,7 @@
 {
   "company": {
-    "nameAr": "هايتك",
-    "nameEn": "HiTech",
+    "nameAr": "إتقان تك",
+    "nameEn": "Itqan Tech",
     "phone": "+970 59 000 0000",
     "whatsapp": "+970590000000",
     "address": "فلسطين",
@@ -84,7 +84,7 @@
       "about.badge": "من نحن",
       "about.titleprefix": "فريق متخصص في ",
       "about.titlehl": "بناء الحلول التقنية",
-      "about.desc": "هايتك شركة تقنية متخصصة في تطوير الحلول الرقمية. نجمع بين الإبداع التقني والفهم العميق لاحتياجات السوق.",
+      "about.desc": "إتقان تك شركة تقنية متخصصة في تطوير الحلول الرقمية. نجمع بين الإبداع التقني والفهم العميق لاحتياجات السوق.",
       "about.cta": "تواصل مع فريقنا",
       "port.badge": "أعمالنا",
       "port.titleprefix": "مشاريع ",
@@ -113,11 +113,11 @@
       "form.pick": "اختر الخدمة...",
       "form.msg": "رسالتك",
       "form.send": "إرسال الرسالة",
-      "foot.desc": "شركة هايتك لحلول التقنية — نبني مستقبلك الرقمي بأحدث التقنيات.",
+      "foot.desc": "شركة إتقان تك لحلول التقنية — نبني مستقبلك الرقمي بأحدث التقنيات.",
       "foot.services": "خدماتنا",
       "foot.quick": "روابط سريعة",
       "foot.contact": "تواصل",
-      "foot.copy": "© 2025 هايتك. جميع الحقوق محفوظة",
+      "foot.copy": "© 2025 إتقان تك. جميع الحقوق محفوظة",
       "foot.admin": "⚙ لوحة التحكم",
       "prod.badge": "للبيع الآن",
       "prod.titleprefix": "أنظمة استثمارية ",
@@ -153,7 +153,7 @@
       "about.badge": "About Us",
       "about.titleprefix": "A Team Specialized In ",
       "about.titlehl": "Building Tech Solutions",
-      "about.desc": "HiTech is a tech company specializing in digital solutions. We combine technical creativity with deep market understanding.",
+      "about.desc": "Itqan Tech is a tech company specializing in digital solutions. We combine technical creativity with deep market understanding.",
       "about.cta": "Contact Our Team",
       "port.badge": "Portfolio",
       "port.titleprefix": "Projects ",
@@ -182,11 +182,11 @@
       "form.pick": "Select service...",
       "form.msg": "Your Message",
       "form.send": "Send Message",
-      "foot.desc": "HiTech Technology Solutions — Building your digital future with the latest technologies.",
+      "foot.desc": "Itqan Tech Solutions — Building your digital future with the latest technologies.",
       "foot.services": "Services",
       "foot.quick": "Quick Links",
       "foot.contact": "Contact",
-      "foot.copy": "© 2025 HiTech. All Rights Reserved",
+      "foot.copy": "© 2025 Itqan Tech. All Rights Reserved",
       "foot.admin": "⚙ Admin Panel",
       "prod.badge": "For Sale",
       "prod.titleprefix": "Investment Systems ",
@@ -513,7 +513,7 @@
   "testimonials": {
     "ar": [
       {
-        "text": "هايتك غيّرت وجه عملي التجاري كلياً. الموقع احترافي جداً وعملاؤنا يثنون عليه دائماً.",
+        "text": "إتقان تك غيّرت وجه عملي التجاري كلياً. الموقع احترافي جداً وعملاؤنا يثنون عليه دائماً.",
         "name": "أحمد الخالد",
         "role": "صاحب متجر إلكتروني",
         "avatar": "أ",
@@ -557,7 +557,7 @@
     ],
     "en": [
       {
-        "text": "HiTech completely transformed my business. The website is incredibly professional.",
+        "text": "Itqan Tech completely transformed my business. The website is incredibly professional.",
         "name": "Ahmed Al-Khalid",
         "role": "E-Commerce Owner",
         "avatar": "A",
@@ -585,7 +585,7 @@
         "stars": 5
       },
       {
-        "text": "Sales increased significantly after launch. Thank you HiTech!",
+        "text": "Sales increased significantly after launch. Thank you Itqan Tech!",
         "name": "Khalid Al-Omari",
         "role": "Fashion Store Owner",
         "avatar": "K",
