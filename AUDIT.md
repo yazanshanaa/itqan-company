@@ -9,6 +9,7 @@
 ## ⚠️ قبل الدمج: خطوات مطلوبة منك (مرتبة)
 
 1. **`SESSION_SECRET` في Vercel لازم يكون "معقد".** مكتبة `connect-mongo` تشفّر الجلسات عبر kruptein، وهذه ترفض بصمت أي secret ليس فيه: **حرفان كبيران + حرفان صغيران + رقمان + رمزان** (`!@#$%^&*` …). النتيجة لو لم يتحقق: تسجيل الدخول للوحة التحكم ينجح ظاهريًا، ثم كل طلب بعده يرجع غير مسجّل. هذا بالضبط ما أفشل CI عندي، وأصلحته هناك. السيرفر الآن يطبع تحذيرًا واضحًا عند التشغيل إن كان الـ secret ضعيفًا.
+   - مشكلة ثانية من نفس النوع أصلحتها في الكود: kruptein 3.4.0 (أحدث نسخة، وكانت ستُثبَّت تلقائيًا في production) غير متوافقة مع connect-mongo 5.1.0، وتكسر قراءة كل جلسة بعد تسجيل الدخول. ثبّتُّها على 3.3.0 عبر `overrides` في `package.json`، وجرّبت الحفظ والقراءة الحقيقيين على كل النسخ.
 2. **`MONGODB_URI` في Vercel.** بعد إصلاح `npm ci` سيتمكن Vercel لأول مرة من نشر تغييرات MongoDB الموجودة على main (sessions + data). بدون `MONGODB_URI` السيرفر لن يعمل.
 3. **`SITE_URL` في Vercel**، مثلًا `https://<الدومين>`. يُستخدم في canonical و hreflang و Open Graph و JSON-LD و sitemap. بدونه تُبنى الروابط من Host الطلب، وهذا يعمل، لكن قد يظهر دومين `*.vercel.app` لو زار أحد الموقع عبره.
 4. **محتوى قاعدة البيانات.** `lib/seed.js` يملأ القاعدة فقط إن كانت فارغة. إن كان فيها محتوى قديم فما زال يقول "هايتك / HiTech"، فعدّل الاسم من لوحة التحكم: معلومات الشركة + النصوص + آراء العملاء.
@@ -22,7 +23,7 @@
 |---|---|
 | الـ Stack | Node.js + Express 4، صفحة واحدة `public/index.html` (CSS/JS مضمّن) + لوحة تحكم `public/itqan-cp9x.html` + API مع MongoDB |
 | Build | لا يوجد build step. "البناء" = `npm ci` + تشغيل السيرفر + `vercel build` |
-| Tests | Playwright E2E (`tests/e2e/`)، الآن **143 اختبار** |
+| Tests | Playwright E2E (`tests/e2e/`): **146 ناجح، 0 فاشل** (3 brute-force مُعطّلة عمدًا في الريبو خلف `RUN_LOCKOUT_TESTS=1`). **CI أخضر على GitHub** ضد MongoDB حقيقي، لأول مرة في الريبو |
 | Deploy | `vercel.json` (legacy `builds` + `routes`). تنبيه: لم يظهر أي deployment status من Vercel على الـ PR، فربما ربط Vercel بـ GitHub غير مفعّل لهذا الريبو والنشر يتم يدويًا |
 | CI | GitHub Actions يشغّل الاختبارات فقط ولا ينشر |
 
@@ -33,7 +34,7 @@
 - **Visual regression:** لقطات full-page (عربي/إنجليزي × 1440px/390px) قبل وبعد كل commit، ومقارنة بكسل ببكسل. كل تغييرات الجولة 1 + Font Awesome + الخطوط + `/en/` + Vercel CDN = **مطابقة بالبكسل**. الفروق الوحيدة هي ما وافقت عليه: اسم البراند، ألوان التباين الثلاثة، اللوغو (AVIF بدل PNG، مطابق بالعين).
 - **الاختبارات:** كل الـ suite ضد السيرفر الحقيقي مع MongoDB in-memory محليًا، وضد **MongoDB حقيقي في CI** (service `mongo:7`).
 - **Vercel:** `vercel build` محلي حقيقي + تشغيل مخرجاته عبر router الخاص بـ Vercel CLI: أماكن الملفات، الـ routes، الـ headers، محتوى الـ function bundle، ولقطات مطابقة.
-- **مراجعة مستقلة:** خمسة مراجعين (server/security، frontend JS، SEO، design/a11y، tests/CI)، وكل ملاحظة تحقق منها مُراجِع ثانٍ يحاول نقضها بإعادة إنتاجها.
+- **مراجعة مستقلة:** خمسة مراجعين (server/security، frontend JS، SEO، design/a11y، tests/CI)، وكل ملاحظة تحقق منها مُراجِع ثانٍ يحاول نقضها بإعادة إنتاجها. كل الـ 15 ملاحظة تأكدت، وكلها أُصلحت (القسم 2-ب).
 
 ---
 
@@ -68,6 +69,23 @@
 | 16 | قائمة الجوال | ✅ | focus ينتقل للقائمة، Tab يدور داخلها، Escape يغلقها ويعيد الـ focus. لا يظهر focus ring لمستخدمي الماوس |
 | 17 | التراخيص | ✅ | OFL لـ Cairo و Syne + ترخيص Font Awesome في `public/fonts/` |
 
+### 2-ب. نتائج المراجعة المستقلة (كلها أُصلحت)
+
+| الخطورة | المشكلة | الإصلاح |
+|---|---|---|
+| أمني | `X-Forwarded-Proto` كان يُكتب بدون تنظيف داخل canonical/OG/JSON-LD، فيمكن حقن `<script>` عبر header | قبول `http`/`https` فقط، واستبدال آمن من رموز `$` |
+| أمني/SEO | مسارات مثل `//index.html` و `/%69ndex.html` كانت تعرض القالب الخام بـ `__SITE_URL__` | أي مسار ينتهي بـ `/index.html` يُحوَّل إلى `/` |
+| SEO | `robots.txt` كان يمنع `/api/data`، فـ Google يرى المحتوى الافتراضي لا الحقيقي | `Allow: /api/data` |
+| SEO/JS | الـ pre-render لـ `/en/` كان يعدّل كود JS المضمّن، فزر "View Demo" يبقى إنجليزيًا بعد التبديل للعربي | التعديل على الـ markup فقط |
+| SEO | `/EN/` و `/En/` كانت تُعرض إنجليزي ثم تنقلب عربي | redirect 301 إلى `/en/` |
+| SEO | ترتيب عناصر sitemap يخالف schema 0.9 | تصحيح الترتيب |
+| SEO | شعار JSON-LD (نص أبيض على شفاف) يختفي على خلفية Google البيضاء | `logo-schema.jpg` بخلفية الموقع الداكنة |
+| A11y | نص skip link و aria-labels عربية على الصفحة الإنجليزية | تتبع لغة الصفحة |
+| A11y | زر Back يترك الرابط واللغة غير متطابقين | مزامنة عند `popstate` |
+| A11y/UX | زر الإغلاق (×) في قائمة الجوال لا يستجيب للمس، لأن الـ navbar فوقه (موجود أصلًا على main) | الـ navbar يمرر اللمس وهي مفتوحة + اختبار جديد يفشل على main |
+| Tests | اختبار تبديل اللغة كان يقبل `/en/` على أنه `/` | مقارنة الرابط بالضبط + اختبار Back |
+| Tests | اختبارات CRUD في لوحة التحكم تترك بيانات اختبار في القاعدة | snapshot قبلها واسترجاع بعدها |
+
 ---
 
 ## 3. قياسات قبل / بعد (main ← HEAD)
@@ -75,8 +93,8 @@
 ### الصفحة كاملة (Chromium، أول زيارة، بدون cache، أحجام raw)
 | | main | HEAD | الفرق |
 |---|---:|---:|---:|
-| إجمالي الحجم: عربي | 700,995 B | 216,795 B | **−69.1%** |
-| إجمالي الحجم: إنجليزي | 717,635 B | 233,443 B | **−67.5%** |
+| إجمالي الحجم: عربي | 700,995 B | 218,327 B | **−68.9%** |
+| إجمالي الحجم: إنجليزي | 717,635 B | 234,975 B | **−67.3%** |
 | عدد الطلبات: عربي | 10 | 8 | −2 |
 | Origins خارجية | 3 (googleapis, gstatic, cdnjs) | **0** | −3 |
 | Stylesheets خارجية حاجبة للـ render | 2 | **0** | −2 |
@@ -88,9 +106,9 @@
 | اللوغو PNG (fallback/OG) | 119,605 B | 98,084 B (lossless) |
 | Font Awesome (CSS + خطوط) | 375,706 B | 9,369 B (−97.5%) |
 | Google Fonts CSS | 17,733 B | 0 |
-| `index.html` كما يُرسل: raw / gzip / brotli | 74,021 / 17,825 / 14,967 | 92,299 / 22,797 / 18,988 |
+| `index.html` كما يُرسل: raw / gzip / brotli | 74,021 / 17,825 / 14,967 | 93,831 / 23,271 / 19,371 |
 
-> HTML نفسه زاد ~4 KB brotli، والسبب: JSON-LD، و meta tags، و `@font-face`، و CSS الأيقونات المضمّن (بدل ملف 102 KB خارجي)، و JS الجديد (لغة/رابط، قائمة الجوال، structured data). المحصلة على الصفحة: −484 KB.
+> HTML نفسه زاد ~4.4 KB brotli، والسبب: JSON-LD، و meta tags، و `@font-face`، و CSS الأيقونات المضمّن (بدل ملف 102 KB خارجي)، و JS الجديد (لغة/رابط، قائمة الجوال، structured data). المحصلة على الصفحة: −483 KB.
 
 ---
 
@@ -111,9 +129,9 @@
 - `public/index.html`: كل تحسينات الأداء/SEO/الوصول + القرارات المعتمدة
 - `public/itqan-cp9x.html`: alt، favicon، noindex، AVIF، إصلاح التبويبات، اسم البراند
 - `routes/seo.js` (جديد): `/`, `/en/`, `robots.txt`, `sitemap.xml`
-- `server.js`: cache headers، AVIF mime، redirect للوغو، تحذير SESSION_SECRET
+- `server.js`: cache headers، AVIF mime، redirect للوغو، حماية القالب الخام، تحذير SESSION_SECRET
 - `vercel.json`: CDN للأصول الثابتة
-- `package.json` / `package-lock.json`: إصلاح connect-mongo فقط، **بدون أي dependency جديدة**
+- `package.json` / `package-lock.json`: إصلاح connect-mongo + تثبيت kruptein 3.3.0 (dependency موجودة أصلًا بشكل غير مباشر)، **بدون أي dependency جديدة**
 - `.github/workflows/playwright.yml`: MongoDB service + بيانات اختبار عشوائية
 - `tests/e2e/*`: إصلاحات + `seo.spec.js` جديد
 - `data/site.json`: اسم البراند
