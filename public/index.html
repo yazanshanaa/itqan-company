@@ -908,8 +908,14 @@
     document.getElementById('c-phone').textContent = c.phone;
     document.getElementById('c-email').textContent = c.email;
     document.getElementById('c-wa').textContent = c.whatsapp;
-    document.getElementById('f-phone').textContent = c.phone;
-    document.getElementById('f-email-link').textContent = c.email;
+    const fPhone = document.getElementById('f-phone');
+    const tel = (c.phone || '').replace(/[^\d+]/g, '');
+    fPhone.textContent = c.phone;
+    if (tel) fPhone.href = 'tel:' + tel; else fPhone.removeAttribute('href');
+    // The public API omits the email (anti-scraping); without one the link gets no href
+    const fEmail = document.getElementById('f-email-link');
+    fEmail.textContent = c.email;
+    if (c.email && /^[^\s@]+@[^\s@]+$/.test(c.email)) fEmail.href = 'mailto:' + c.email; else fEmail.removeAttribute('href');
     const addr = t('con.address');
     document.getElementById('c-addr').textContent = addr;
     document.getElementById('f-addr').textContent = addr;
@@ -936,6 +942,29 @@
     const nm = lang==='ar' ? c.nameAr : c.nameEn;
     if(nameEl) nameEl.textContent = nm;
     if(fNameEl) fNameEl.textContent = nm;
+    updateStructuredData();
+  }
+  // Real contact details entered in the admin panel flow into the JSON-LD; template
+  // placeholders (+970 59 000 0000, bare https://facebook.com) are left out.
+  function updateStructuredData() {
+    const el = document.querySelector('script[type="application/ld+json"]');
+    if (!el) return;
+    try {
+      const ld = JSON.parse(el.textContent);
+      const c = D.company || {};
+      const digits = (c.phone || '').replace(/\D/g, '');
+      const tel = digits.length >= 9 && !/0{5,}/.test(digits) ? (c.phone || '').replace(/[^\d+]/g, '') : '';
+      const sv = c.socialVisible || {};
+      const sameAs = ['facebook', 'instagram', 'tiktok', 'linkedin']
+        .filter(k => sv[k] !== false)
+        .map(k => safeUrl(c[k] || ''))
+        .filter(u => u && new URL(u).pathname.replace(/\/+$/, ''));
+      ld['@graph'].forEach(n => {
+        if (n['@type'] === 'LocalBusiness') { if (tel) n.telephone = tel; else delete n.telephone; }
+        if (n['@type'] === 'LocalBusiness' || n['@type'] === 'Organization') { if (sameAs.length) n.sameAs = sameAs; else delete n.sameAs; }
+      });
+      el.textContent = JSON.stringify(ld);
+    } catch (e) { /* keep the server-rendered JSON-LD */ }
   }
   function renderProcess() {
     const steps = D.process[lang] || D.process.ar;
