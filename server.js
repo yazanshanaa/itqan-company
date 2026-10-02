@@ -123,6 +123,15 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/data', require('./routes/data'));
 app.use('/api/contact', require('./routes/contact'));
 app.use(require('./routes/seo'));
+// public/index.html is a template rendered by routes/seo.js; never let express.static serve it
+// raw through path variants such as //index.html, /./index.html or /%69ndex.html
+app.use((req, res, next) => {
+  let p;
+  try { p = path.posix.normalize(decodeURIComponent(req.path)); } catch { return next(); }
+  if (p.toLowerCase() === '/index.html') return res.redirect(301, '/');
+  next();
+});
+
 // The logo was renamed; keep the old URL working for anything that linked to it
 app.get('/img/orginal.png', (req, res) => res.redirect(301, '/img/logo.png'));
 

@@ -21,7 +21,8 @@ function siteUrl(req) {
   if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/+$/, '');
   const host = req.get('host') || '';
   if (!SAFE_HOST.test(host)) return '';
-  return `${req.protocol}://${host}`;
+  // req.protocol comes from X-Forwarded-Proto behind a proxy: never echo it raw
+  return `${req.protocol === 'https' ? 'https' : 'http'}://${host}`;
 }
 
 const escText = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
