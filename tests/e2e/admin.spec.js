@@ -1,7 +1,7 @@
 'use strict';
 // @ts-check
-const { test, expect } = require('@playwright/test');
-const { loginAsAdmin, expectSuccessToast, expectErrorToast } = require('./helpers');
+const { test, expect, request: apiRequest } = require('@playwright/test');
+const { ADMIN_PASS, loginAsAdmin, expectSuccessToast, expectErrorToast } = require('./helpers');
 
 /**
  * Admin Panel — CRUD and navigation tests.
@@ -27,6 +27,28 @@ const { loginAsAdmin, expectSuccessToast, expectErrorToast } = require('./helper
  *   Modal close:   .modal-close
  */
 test.describe.serial('Admin Panel', () => {
+  // The CRUD tests below save real content. Snapshot the site data first and put it back
+  // afterwards, so a run against a persistent database leaves no test records behind.
+  let snapshot;
+  async function adminApi(testInfo) {
+    const ctx = await apiRequest.newContext({ baseURL: testInfo.project.use.baseURL });
+    const login = await ctx.post('/api/auth/login', { data: { password: ADMIN_PASS } });
+    expect(login.ok()).toBe(true);
+    return ctx;
+  }
+  test.beforeAll(async ({}, testInfo) => {
+    const api = await adminApi(testInfo);
+    snapshot = await (await api.get('/api/data')).json();
+    await api.dispose();
+  });
+  test.afterAll(async ({}, testInfo) => {
+    if (!snapshot) return;
+    const api = await adminApi(testInfo);
+    const res = await api.put('/api/data', { data: snapshot });
+    expect(res.ok()).toBe(true);
+    await api.dispose();
+  });
+
   test.beforeEach(async ({ page }) => {
     await loginAsAdmin(page);
   });

@@ -54,15 +54,28 @@ test.describe('SEO — head metadata', () => {
 });
 
 test.describe('SEO — language toggle keeps URL and title in sync', () => {
-  test('EN then AR switches /en/ <-> / without reloading', async ({ page }) => {
+  test('EN then AR switches /en/ <-> / without reloading', async ({ page, baseURL }) => {
     await page.goto('/');
     await waitForHomeContent(page);
     await page.locator('#btn-en').click();
-    await expect(page).toHaveURL(/\/en\/$/);
+    await expect(page).toHaveURL(`${baseURL}/en/`);
     await expect(page).toHaveTitle(EN_TITLE);
     await page.locator('#btn-ar').click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(`${baseURL}/`);
     await expect(page).toHaveTitle(AR_TITLE);
+  });
+
+  test('AR on /en/ moves to / and Back keeps the chosen language in the URL', async ({ page, baseURL }) => {
+    await page.goto('/en/');
+    await waitForHomeContent(page);
+    await page.locator('#navbar .nav-menu a[href="#services"]').click();
+    await expect(page).toHaveURL(`${baseURL}/en/#services`);
+    await page.locator('#btn-ar').click();
+    await expect(page).toHaveURL(`${baseURL}/#services`);
+    await page.goBack();
+    // the restored entry was /en/ but the visitor chose Arabic: the address bar follows the language
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+    await expect(page).toHaveURL(`${baseURL}/`);
   });
 });
 
