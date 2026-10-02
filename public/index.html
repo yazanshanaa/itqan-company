@@ -80,8 +80,9 @@
   </script>
   <link rel="preload" href="fonts/cairo-arabic-v31.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cairo-latin-v31.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="preload" href="/fonts/fa-solid-900-v650-s1.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Font Awesome 6.5.0 subset: only the icons this page uses (full set loads on demand, see ensureIcons) -->
+  <style>/*! Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc. */.fa,.fa-brands,.fa-classic,.fa-regular,.fa-sharp,.fa-solid,.fab,.far,.fas{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;display:var(--fa-display,inline-block);font-style:normal;font-variant:normal;line-height:1;text-rendering:auto}.fa-classic,.fa-regular,.fa-solid,.far,.fas{font-family:"Font Awesome 6 Free"}.fa-brands,.fab{font-family:"Font Awesome 6 Brands"}.fa-paint-brush:before,.fa-paintbrush:before{content:"\f1fc"}.fa-globe:before{content:"\f0ac"}.fa-star:before{content:"\f005"}.fa-headset:before{content:"\f590"}.fa-handshake:before{content:"\f2b5"}.fa-check-circle:before,.fa-circle-check:before{content:"\f058"}.fa-layer-group:before{content:"\f5fd"}.fa-arrow-right:before{content:"\f061"}.fa-mobile-alt:before,.fa-mobile-screen-button:before{content:"\f3cd"}.fa-route:before{content:"\f4d7"}.fa-tags:before{content:"\f02c"}.fa-phone:before{content:"\f095"}.fa-arrow-left:before{content:"\f060"}.fa-external-link-alt:before,.fa-up-right-from-square:before{content:"\f35d"}.fa-table-cells-large:before,.fa-th-large:before{content:"\f009"}.fa-envelope:before{content:"\f0e0"}.fa-cart-shopping:before,.fa-shopping-cart:before{content:"\f07a"}.fa-bolt:before,.fa-zap:before{content:"\f0e7"}.fa-location-dot:before,.fa-map-marker-alt:before{content:"\f3c5"}.fa-chevron-down:before{content:"\f078"}.fa-close:before,.fa-multiply:before,.fa-remove:before,.fa-times:before,.fa-xmark:before{content:"\f00d"}.fa-rocket:before{content:"\f135"}.fa-robot:before{content:"\f544"}.fa-building:before{content:"\f1ad"}.fa-paper-plane:before{content:"\f1d8"}.fa-brain:before{content:"\f5dc"}@font-face{font-family:"Font Awesome 6 Brands";font-style:normal;font-weight:400;font-display:block;src:url(/fonts/fa-brands-400-v650-s1.woff2) format("woff2")}.fa-brands,.fab{font-weight:400}.fa-linkedin-in:before{content:"\f0e1"}.fa-react:before{content:"\f41b"}.fa-facebook-f:before{content:"\f39e"}.fa-tiktok:before{content:"\e07b"}.fa-instagram:before{content:"\f16d"}.fa-whatsapp:before{content:"\f232"}.fa-node-js:before{content:"\f3d3"}@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:block;src:url(/fonts/fa-solid-900-v650-s1.woff2) format("woff2")}.fa-solid,.fas{font-weight:900}</style>
   <style>
     /* Self-hosted Cairo & Syne: the same variable woff2 files and unicode-ranges Google Fonts serves */
     @font-face{font-family:'Cairo';font-style:normal;font-weight:300 900;font-display:swap;src:url(fonts/cairo-arabic-v31.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1}
@@ -861,8 +862,23 @@
       if(v && v !== el.getAttribute('data-key')) el.textContent = v;
     });
   }
+  // Icons in the self-hosted Font Awesome subset (incl. aliases). A service icon chosen in
+  // the admin panel outside this list pulls in the full Font Awesome stylesheet from cdnjs.
+  const FA_SUBSET = new Set(['fa-times','fa-close','fa-multiply','fa-remove','fa-xmark','fa-bolt','fa-zap','fa-rocket','fa-arrow-left','fa-arrow-right','fa-chevron-down','fa-layer-group','fa-mobile-alt','fa-mobile-screen-button','fa-brain','fa-building','fa-handshake','fa-route','fa-star','fa-th-large','fa-table-cells-large','fa-tags','fa-envelope','fa-phone','fa-map-marker-alt','fa-location-dot','fa-paper-plane','fa-globe','fa-paint-brush','fa-paintbrush','fa-shopping-cart','fa-cart-shopping','fa-robot','fa-headset','fa-check-circle','fa-circle-check','fa-external-link-alt','fa-up-right-from-square','fa-react','fa-node-js','fa-whatsapp','fa-facebook-f','fa-instagram','fa-tiktok','fa-linkedin-in']);
+  const FA_STYLES = new Set(['fa-solid','fa-regular','fa-brands','fa-classic','fa-sharp']);
+  function ensureIcons(classes) {
+    if (document.getElementById('fa-full')) return;
+    const missing = classes.join(' ').split(/\s+/).some(c => c.startsWith('fa-') && !FA_STYLES.has(c) && !FA_SUBSET.has(c));
+    if (!missing) return;
+    const l = document.createElement('link');
+    l.id = 'fa-full'; l.rel = 'stylesheet'; l.crossOrigin = 'anonymous'; l.referrerPolicy = 'no-referrer';
+    l.integrity = 'sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==';
+    l.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css';
+    document.head.appendChild(l);
+  }
   function renderServices() {
     const svcs = (D.services[lang] || D.services.ar).filter(s => s.visible !== false);
+    ensureIcons(svcs.filter(s => !(s.image && safeUrl(s.image))).map(s => String(s.icon || '')));
     const delays = ['','reveal-delay-1','reveal-delay-2','reveal-delay-3','reveal-delay-4','reveal-delay-5'];
     const more = t('svc.more');
     const arr = lang==='ar' ? 'fa-arrow-left' : 'fa-arrow-right';
