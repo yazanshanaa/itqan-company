@@ -28,8 +28,14 @@ test.describe('Homepage — Structure & Content', () => {
   test('navbar is visible and contains all anchor links', async ({ page }) => {
     const nav = page.locator('#navbar');
     await expect(nav).toBeVisible();
+    // At <=768px the links move into the hamburger menu (Mobile Chrome project)
+    let menu = nav.locator('.nav-menu');
+    if (page.viewportSize().width <= 768) {
+      await nav.locator('.hamburger').click();
+      menu = page.locator('#mobile-menu');
+    }
     for (const href of ['#services', '#portfolio', '#about', '#contact']) {
-      await expect(nav.locator(`a[href="${href}"]`)).toBeVisible();
+      await expect(menu.locator(`a[href="${href}"]`)).toBeVisible();
     }
   });
 

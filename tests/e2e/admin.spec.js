@@ -10,11 +10,12 @@ const { loginAsAdmin, expectSuccessToast, expectErrorToast } = require('./helper
  * Tests are serial to prevent race conditions on the server-side JSON file.
  *
  * Key stable selectors (all from admin.html):
- *   Section nav:   [onclick*="showSection"][onclick*="'sectionName'"]
+ *   Section nav:   .nav-item[onclick*="showSection"][onclick*="'sectionName'"]
+ *                  (sidebar only — dashboard quick-action buttons also call showSection)
  *   Section pages: #sec-overview  #sec-company  #sec-hero  #sec-services
  *                  #sec-portfolio  #sec-process  #sec-testimonials
  *                  #sec-about  #sec-stats  #sec-contact  #sec-texts  #sec-password
- *   Save all:      [onclick="saveAll()"]
+ *   Save all:      .top-actions [onclick="saveAll()"]  (top bar; the dashboard has a second one)
  *   Toast:         #toast.show
  *   Lists:
  *     #svcs-list-ar / #svcs-list-en
@@ -32,7 +33,7 @@ test.describe.serial('Admin Panel', () => {
 
   // ── Overview ──────────────────────────────────────────────────────────────
   test('overview section shows service and portfolio counts', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'overview\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'overview\'"]').click();
     await expect(page.locator('#sec-overview')).toBeVisible();
     // updateOverview() populates these spans
     await expect(page.locator('#ov-svcs')).not.toBeEmpty();
@@ -56,14 +57,14 @@ test.describe.serial('Admin Panel', () => {
     ];
 
     for (const [name, sectionId] of sections) {
-      await page.locator(`[onclick*="showSection"][onclick*="'${name}'"]`).click();
+      await page.locator(`.nav-item[onclick*="showSection"][onclick*="'${name}'"]`).click();
       await expect(page.locator(sectionId)).toBeVisible({ timeout: 4_000 });
     }
   });
 
   // ── Company info ───────────────────────────────────────────────────────────
   test('company section loads form pre-filled with existing data', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'company\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'company\'"]').click();
     await expect(page.locator('#sec-company')).toBeVisible();
     // loadCompany() fills these from D.company
     await expect(page.locator('#c-nameAr')).not.toHaveValue('');
@@ -72,30 +73,30 @@ test.describe.serial('Admin Panel', () => {
   });
 
   test('editing company phone and saving shows a success toast', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'company\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'company\'"]').click();
 
     const phone = page.locator('#c-phone');
     const original = await phone.inputValue();
     // Make a trivial change
     await phone.fill(original + ' ');
-    await page.locator('[onclick="saveAll()"]').click();
+    await page.locator('.top-actions [onclick="saveAll()"]').click();
     await expectSuccessToast(page);
 
     // Restore the original value
     await phone.fill(original);
-    await page.locator('[onclick="saveAll()"]').click();
+    await page.locator('.top-actions [onclick="saveAll()"]').click();
     await expectSuccessToast(page);
   });
 
   // ── Services CRUD ──────────────────────────────────────────────────────────
   test('services AR list has at least one item', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'services\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'services\'"]').click();
     await page.waitForSelector('#svcs-list-ar .list-item');
     expect(await page.locator('#svcs-list-ar .list-item').count()).toBeGreaterThan(0);
   });
 
   test('add service: modal opens, fills, saves → item count increases', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'services\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'services\'"]').click();
     await page.waitForSelector('#svcs-list-ar .list-item');
     const before = await page.locator('#svcs-list-ar .list-item').count();
 
@@ -116,7 +117,7 @@ test.describe.serial('Admin Panel', () => {
   });
 
   test('edit service: modal opens pre-filled; close without saving', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'services\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'services\'"]').click();
     await page.waitForSelector('#svcs-list-ar .list-item');
 
     // Click edit on the first list item (onclick="editService(0,'ar')" or similar)
@@ -133,7 +134,7 @@ test.describe.serial('Admin Panel', () => {
   });
 
   test('delete last service: list count decreases by 1', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'services\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'services\'"]').click();
     await page.waitForSelector('#svcs-list-ar .list-item');
     const before = await page.locator('#svcs-list-ar .list-item').count();
     expect(before).toBeGreaterThan(0);
@@ -151,17 +152,17 @@ test.describe.serial('Admin Panel', () => {
 
   // ── Portfolio CRUD ─────────────────────────────────────────────────────────
   test('portfolio AR list has at least one item', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'portfolio\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'portfolio\'"]').click();
     await page.waitForSelector('#port-list-ar .list-item');
     expect(await page.locator('#port-list-ar .list-item').count()).toBeGreaterThan(0);
   });
 
   test('add portfolio project: modal opens, fills, saves → count increases', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'portfolio\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'portfolio\'"]').click();
     await page.waitForSelector('#port-list-ar .list-item');
     const before = await page.locator('#port-list-ar .list-item').count();
 
-    await page.locator('[onclick="openAddProject(\'ar\')"]').click();
+    await page.locator('[onclick="openAddPort(\'ar\')"]').click();
     await expect(page.locator('#port-modal')).toBeVisible();
 
     await page.locator('#port-emoji').fill('🧪');
@@ -178,13 +179,13 @@ test.describe.serial('Admin Panel', () => {
 
   // ── Process CRUD ───────────────────────────────────────────────────────────
   test('process AR list has at least one step', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'process\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'process\'"]').click();
     await page.waitForSelector('#proc-list-ar .list-item');
     expect(await page.locator('#proc-list-ar .list-item').count()).toBeGreaterThan(0);
   });
 
   test('add process step: modal opens, fills, saves → count increases', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'process\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'process\'"]').click();
     await page.waitForSelector('#proc-list-ar .list-item');
     const before = await page.locator('#proc-list-ar .list-item').count();
 
@@ -205,13 +206,13 @@ test.describe.serial('Admin Panel', () => {
 
   // ── Testimonials CRUD ──────────────────────────────────────────────────────
   test('testimonials AR list has at least one review', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'testimonials\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'testimonials\'"]').click();
     await page.waitForSelector('#testi-list-ar .list-item');
     expect(await page.locator('#testi-list-ar .list-item').count()).toBeGreaterThan(0);
   });
 
   test('add testimonial: modal opens, fills, saves → count increases', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'testimonials\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'testimonials\'"]').click();
     await page.waitForSelector('#testi-list-ar .list-item');
     const before = await page.locator('#testi-list-ar .list-item').count();
 
@@ -233,7 +234,7 @@ test.describe.serial('Admin Panel', () => {
 
   // ── Language tabs ──────────────────────────────────────────────────────────
   test('AR/EN tab switch in services shows the correct list', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'services\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'services\'"]').click();
     await page.waitForSelector('#svcs-list-ar');
 
     // Click the EN tab (onclick contains "svcs-en")
@@ -249,7 +250,7 @@ test.describe.serial('Admin Panel', () => {
 
   // ── Password change ────────────────────────────────────────────────────────
   test('password section has #p-old, #p-new, #p-conf fields', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'password\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'password\'"]').click();
     await expect(page.locator('#sec-password')).toBeVisible();
     await expect(page.locator('#p-old')).toBeVisible();
     await expect(page.locator('#p-new')).toBeVisible();
@@ -257,7 +258,7 @@ test.describe.serial('Admin Panel', () => {
   });
 
   test('mismatched confirm password shows error toast', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'password\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'password\'"]').click();
     await page.locator('#p-old').fill('itqan2024');
     await page.locator('#p-new').fill('NewPass@999');
     await page.locator('#p-conf').fill('DifferentPass@999');    // Different from #p-new
@@ -266,7 +267,7 @@ test.describe.serial('Admin Panel', () => {
   });
 
   test('new password shorter than 6 chars shows error toast', async ({ page }) => {
-    await page.locator('[onclick*="showSection"][onclick*="\'password\'"]').click();
+    await page.locator('.nav-item[onclick*="showSection"][onclick*="\'password\'"]').click();
     await page.locator('#p-old').fill('itqan2024');
     await page.locator('#p-new').fill('12');
     await page.locator('#p-conf').fill('12');

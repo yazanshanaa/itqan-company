@@ -51,9 +51,10 @@ async function expectSuccessToast(page, timeout = 6_000) {
   const { expect } = require('@playwright/test');
   const toast = page.locator('#toast.show');
   await expect(toast).toBeVisible({ timeout });
-  // Error toasts use background #EF4444 — rgb(239,68,68)
-  const bg = await toast.evaluate((el) => window.getComputedStyle(el).backgroundColor);
-  expect(bg).not.toContain('239, 68, 68');
+  // Success toasts use #34D399. The toast has `transition: all .4s`, so a one-off
+  // getComputedStyle read can land mid-fade from the previous toast's colour;
+  // toHaveCSS retries until the final colour is reached.
+  await expect(toast).toHaveCSS('background-color', 'rgb(52, 211, 153)', { timeout });
 }
 
 /**
@@ -66,8 +67,8 @@ async function expectErrorToast(page, timeout = 6_000) {
   const { expect } = require('@playwright/test');
   const toast = page.locator('#toast.show');
   await expect(toast).toBeVisible({ timeout });
-  const bg = await toast.evaluate((el) => window.getComputedStyle(el).backgroundColor);
-  expect(bg).toContain('239, 68, 68');
+  // Error toasts use #EF4444 (retrying for the same transition reason as above)
+  await expect(toast).toHaveCSS('background-color', 'rgb(239, 68, 68)', { timeout });
 }
 
 module.exports = { ADMIN_PASS, loginAsAdmin, waitForHomeContent, expectSuccessToast, expectErrorToast };
