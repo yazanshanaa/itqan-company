@@ -113,6 +113,7 @@ app.use('/api/contact', (req, res, next) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/data', require('./routes/data'));
 app.use('/api/contact', require('./routes/contact'));
+app.use(require('./routes/seo'));
 // Express 4's mime table predates AVIF
 express.static.mime.define({ 'image/avif': ['avif'] });
 app.use(express.static(path.join(__dirname, 'public'), {
