@@ -1,138 +1,122 @@
-# AUDIT — Performance / SEO / Accessibility pass
+# AUDIT: Performance / SEO / Accessibility
 
-> الفرع: `perf/seo-pass` · التاريخ: 2026-10-02
-> القاعدة الحاكمة: **صفر تغيير بصري**. لم يتم تغيير أي لون أو خط أو layout أو نص تسويقي ظاهر.
+> الفرع: `perf/seo-pass` · PR: yazanshanaa/itqan-company#1 · آخر تحديث: 2026-10-02
+> الجولة 1: تحسينات بدون أي تغيير بصري. الجولة 2: تنفيذ القرارات الـ 17 التي وافقت عليها.
+> لم يتم أي push على `main`.
 
 ---
 
-## 0. فحص البيئة (قبل أي تعديل)
+## ⚠️ قبل الدمج: خطوات مطلوبة منك (مرتبة)
+
+1. **`SESSION_SECRET` في Vercel لازم يكون "معقد".** مكتبة `connect-mongo` تشفّر الجلسات عبر kruptein، وهذه ترفض بصمت أي secret ليس فيه: **حرفان كبيران + حرفان صغيران + رقمان + رمزان** (`!@#$%^&*` …). النتيجة لو لم يتحقق: تسجيل الدخول للوحة التحكم ينجح ظاهريًا، ثم كل طلب بعده يرجع غير مسجّل. هذا بالضبط ما أفشل CI عندي، وأصلحته هناك. السيرفر الآن يطبع تحذيرًا واضحًا عند التشغيل إن كان الـ secret ضعيفًا.
+2. **`MONGODB_URI` في Vercel.** بعد إصلاح `npm ci` سيتمكن Vercel لأول مرة من نشر تغييرات MongoDB الموجودة على main (sessions + data). بدون `MONGODB_URI` السيرفر لن يعمل.
+3. **`SITE_URL` في Vercel**، مثلًا `https://<الدومين>`. يُستخدم في canonical و hreflang و Open Graph و JSON-LD و sitemap. بدونه تُبنى الروابط من Host الطلب، وهذا يعمل، لكن قد يظهر دومين `*.vercel.app` لو زار أحد الموقع عبره.
+4. **محتوى قاعدة البيانات.** `lib/seed.js` يملأ القاعدة فقط إن كانت فارغة. إن كان فيها محتوى قديم فما زال يقول "هايتك / HiTech"، فعدّل الاسم من لوحة التحكم: معلومات الشركة + النصوص + آراء العملاء.
+5. **بيانات تواصل حقيقية** (هاتف، واتساب، روابط السوشال). أدخلها من لوحة التحكم، وستظهر تلقائيًا في الـ structured data (`telephone`, `sameAs`) وفي روابط `tel:`. القيم الوهمية الحالية (`+970 59 000 0000` و `https://facebook.com`) مستبعدة عمدًا.
+
+---
+
+## 0. البيئة
 
 | البند | النتيجة |
 |---|---|
-| الـ Stack | Node.js + Express 4 يخدم صفحة واحدة ثابتة `public/index.html` (CSS/JS inline) + لوحة تحكم `public/itqan-cp9x.html` + API (`/api/data`, `/api/auth`, `/api/contact`) مع MongoDB |
-| Build system | **لا يوجد** — لا bundler ولا build script. "الـ build" عمليًا = `npm ci` + تشغيل السيرفر |
-| Tests | Playwright E2E في `tests/e2e/` + `test/qa.js`. كلها تحتاج MongoDB حقيقي |
-| Auto-deploy | يوجد `vercel.json` (`@vercel/node`, كل المسارات → `server.js`) + commit بعنوان "Add Vercel configuration for server deployment" ⇒ **Vercel Git integration من main**. GitHub Actions (`playwright.yml`) يشغّل الاختبارات فقط ولا ينشر |
-| القرار | **لم يتم أي push على main.** كل العمل على `perf/seo-pass` مع Pull Request |
-
-### مشاكل موجودة مسبقًا على main (ليست من هذا الـ PR)
-1. **`npm ci` يفشل على main**: `package.json` يطلب `connect-mongo@^5.1.1` وهذه النسخة غير موجودة على npm (آخر 5.x هي 5.1.0)، و`package-lock.json` لا يحتوي `connect-mongo` ولا `mongodb` أصلًا. ⇒ الـ CI أحمر، وغالبًا آخر deploys على Vercel فشلت أيضًا (انظر القرار #1).
-2. **17 من 70** اختبار E2E (homepage + navigation) تفشل على main بسبب أخطاء في الاختبارات نفسها (مثلًا strict-mode: `a[href="#contact"]` يطابق عنصرين داخل navbar).
+| الـ Stack | Node.js + Express 4، صفحة واحدة `public/index.html` (CSS/JS مضمّن) + لوحة تحكم `public/itqan-cp9x.html` + API مع MongoDB |
+| Build | لا يوجد build step. "البناء" = `npm ci` + تشغيل السيرفر + `vercel build` |
+| Tests | Playwright E2E (`tests/e2e/`)، الآن **143 اختبار** |
+| Deploy | `vercel.json` (legacy `builds` + `routes`). تنبيه: لم يظهر أي deployment status من Vercel على الـ PR، فربما ربط Vercel بـ GitHub غير مفعّل لهذا الريبو والنشر يتم يدويًا |
+| CI | GitHub Actions يشغّل الاختبارات فقط ولا ينشر |
 
 ---
 
-## 1. طريقة التحقق بعد كل مجموعة تعديلات
+## 1. طريقة التحقق
 
-بما أنه لا يوجد build ولا MongoDB متاح في بيئة العمل، تم التحقق محليًا (بدون تعديل أي ملف في المشروع) بـ:
-
-1. `npm install --no-save connect-mongo@5.1.0` (محليًا فقط — `package.json` و lockfile لم يُلمسا).
-2. `node --check` لكل ملفات JS + تحقق أن JSON-LD يُحلَّل بشكل صحيح.
-3. تشغيل `server.js` الحقيقي مع stub لـ MongoDB (البيانات تُقرأ من `data/site.json`).
-4. **Visual regression**: screenshots كاملة للصفحة (عربي/إنجليزي × desktop 1440px / mobile 390px) قبل وبعد، ومقارنة pixel-by-pixel.
-   - النتيجة النهائية: **مطابقة 100% لكل البكسلات** خارج صورة اللوغو. اللوغو نفسه يختلف فقط بإعادة الـ resampling (AVIF مصغّر بدل PNG كبير يصغّره المتصفح) وهو بصريًا مطابق.
-   - تم التأكد أن الخطوط self-hosted تعطي rendering مطابق بالبكسل للخطوط من Google.
-5. اختبارات Playwright (homepage + navigation، Desktop + Mobile): **نفس النتيجة بالضبط كـ main** (53 pass / 17 fail موجودة مسبقًا، ولا فشل جديد).
+- **Visual regression:** لقطات full-page (عربي/إنجليزي × 1440px/390px) قبل وبعد كل commit، ومقارنة بكسل ببكسل. كل تغييرات الجولة 1 + Font Awesome + الخطوط + `/en/` + Vercel CDN = **مطابقة بالبكسل**. الفروق الوحيدة هي ما وافقت عليه: اسم البراند، ألوان التباين الثلاثة، اللوغو (AVIF بدل PNG، مطابق بالعين).
+- **الاختبارات:** كل الـ suite ضد السيرفر الحقيقي مع MongoDB in-memory محليًا، وضد **MongoDB حقيقي في CI** (service `mongo:7`).
+- **Vercel:** `vercel build` محلي حقيقي + تشغيل مخرجاته عبر router الخاص بـ Vercel CLI: أماكن الملفات، الـ routes، الـ headers، محتوى الـ function bundle، ولقطات مطابقة.
+- **مراجعة مستقلة:** خمسة مراجعين (server/security، frontend JS، SEO، design/a11y، tests/CI)، وكل ملاحظة تحقق منها مُراجِع ثانٍ يحاول نقضها بإعادة إنتاجها.
 
 ---
 
 ## 2. ما تم تنفيذه
 
-### Performance
-| التغيير | التفاصيل |
-|---|---|
-| صور WebP/AVIF مع fallback | اللوغو داخل `<picture>`: AVIF ← WebP ← PNG الأصلي. نسخ 178w و356w (1x/2x) بنفس نسبة العرض للارتفاع |
-| width/height لكل صورة | `width="677" height="369"` + `aspect-ratio` على `.site-logo-img` ⇒ لا CLS ولا حتى إزاحة sub-pixel |
-| Lazy loading | لوغو الـ footer + صور الخدمات/المشاريع/المنتجات (المضافة من لوحة التحكم) `loading="lazy" decoding="async"`. لوغو الـ navbar `fetchpriority="high"` |
-| الخطوط | Self-host لـ Cairo و Syne (نفس ملفات woff2 الـ variable ونفس unicode-ranges التي يرسلها Google). `preload` لـ Cairo Arabic + Latin، و`font-display: swap` |
-| Third-party | حذف الاعتماد على `fonts.googleapis.com` و`fonts.gstatic.com` (stylesheet حاجب للـ render + اتصالين DNS/TLS). إضافة `preconnect` لـ cdnjs |
-| Caching | `Cache-Control` للخطوط: سنة + `immutable` (أسماء الملفات فيها رقم النسخة). للصور: 7 أيام + `stale-while-revalidate` |
-| MIME | تسجيل `image/avif` (Express 4 كان يرسله `application/octet-stream`) |
-| CSS غير مستخدم | حذف `.nav-logo-icon`, `.nav-logo-text` (القواعد الوحيدة غير المستخدمة في الصفحة) |
+### الجولة 1 (بدون أي تغيير بصري)
+- **صور:** اللوغو AVIF/WebP بـ `<picture>` + fallback PNG، `width`/`height` + `aspect-ratio` (صفر CLS)، lazy loading لما تحت الـ fold.
+- **خطوط:** self-host لـ Cairo/Syne بنفس ملفات Google، `preload` + `font-display: swap`.
+- **Cache headers** للخطوط والصور، MIME لـ AVIF، حذف CSS غير مستخدم.
+- **SEO:** meta description، canonical، Open Graph، Twitter cards، JSON-LD (Organization + LocalBusiness + WebSite)، `robots.txt`، `sitemap.xml`، `noindex` للوحة التحكم.
+- **A11y:** `<main>` + skip link، ترتيب headings، labels، ARIA للأزرار، `:focus-visible`، `prefers-reduced-motion`.
 
-### SEO
-| التغيير | التفاصيل |
-|---|---|
-| Title / description | الـ title موجود وفريد لكل صفحة (لم يُغيَّر — اختبار E2E يتحقق منه). أُضيف `meta description` فريد للرئيسية وللوحة التحكم |
-| Canonical + Open Graph + Twitter | `og:*` كاملة (`ar_AR` + `en_US`)، `twitter:card=summary_large_image` |
-| Structured data | JSON-LD `@graph`: **Organization** + **LocalBusiness** باسم `إتقان تك - Itqan Tech`، العنوان برطعة / جنين / PS، `areaServed` برطعة وجنين، و`OfferCatalog` بالخدمات: تطوير المواقع، تطوير التطبيقات، أتمتة n8n، الأمن السيبراني، التسويق الرقمي. + **WebSite** |
-| robots.txt / sitemap.xml | `routes/seo.js` يولّدهما ديناميكيًا. `robots.txt` يمنع `/api/` ويشير للـ sitemap. لوحة التحكم **غير مذكورة** في robots.txt عمدًا (حتى لا يُكشف مسارها) ومحمية بـ `noindex` |
-| Absolute URLs | الدومين غير موجود في الريبو، لذلك `canonical/og:url/og:image/JSON-LD/sitemap` تُبنى من متغير البيئة الاختياري `SITE_URL`، وإن لم يوجد فمن الـ Host للطلب (مع validation ضد Host-header injection) |
-| lang / dir | `<html lang="ar" dir="rtl">` صحيحة؛ والتبديل للإنجليزية يغيّرها لـ `en/ltr` (موجود ومُختبر) |
-| لوحة التحكم | `<meta name="robots" content="noindex, nofollow">` إضافة إلى `X-Robots-Tag` الموجود |
+### الجولة 2: القرارات الـ 17
 
-### Accessibility
-| التغيير | التفاصيل |
-|---|---|
-| alt | لوغو الموقع ولوحة التحكم: `إتقان تك - Itqan Tech` (كان `Itqan`) |
-| HTML دلالي | `<main>` + skip link (يظهر فقط عند Tab) + `aria-label` للـ nav وقائمة الجوال |
-| ترتيب headings | h1 ← h2 (الأقسام) ← h3 (عناوين البطاقات: خدمات، مراحل، مشاريع، منتجات). عناوين الـ footer من h4 إلى h2 (كان هناك قفز من h2 إلى h4). نفس الـ classes ⇒ نفس الشكل |
-| Forms | `label for` مربوط بكل حقل، `autocomplete`، `aria-required`، `type="button"` |
-| أزرار بأيقونات فقط | أسماء مقروءة لـ hamburger (+`aria-expanded`)، إغلاق القائمة، أزرار اللغة (+`aria-pressed`)، روابط السوشال، زر واتساب |
-| أيقونات زخرفية | `aria-hidden="true"` لكل أيقونات Font Awesome، كرت الكود، علامة الاقتباس. النجوم تُقرأ `5/5` |
-| Focus | `:focus-visible` بلون `--primary` الموجود (يظهر فقط مع الكيبورد، لا يظهر مع الماوس) |
-| Motion | `prefers-reduced-motion` يوقف الأنيميشن لمن فعّل الخيار في نظامه فقط |
-| أخرى | `rel="noopener noreferrer"` لروابط `target=_blank`، الـ toast `role="status"` |
-| التباين | تم القياس فقط — **لم يُغيَّر أي لون**. النتائج في القرار #7 |
+| # | القرار | الحالة | ماذا تم |
+|---|---|---|---|
+| 1 | إصلاح `connect-mongo` + lockfile | ✅ | `^5.1.1` (غير موجودة) → `^5.1.0`، lockfile متزامن، `npm ci` ينجح. CI يعمل الآن مع MongoDB حقيقي وبيانات اختبار عشوائية لكل تشغيل |
+| 2 | `SITE_URL` | ⏳ منك | لا أملك وصولًا لـ Vercel ولا أعرف الدومين. انظر الخطوات أعلاه |
+| 3 | اسم البراند | ✅ | "هايتك/HiTech" → "إتقان تك/Itqan Tech" في الصفحة، الـ DEFAULT، لوحة التحكم، `data/site.json`. الدومين الوهمي `hitech.ps` في كرت الكود → `itqan-tech` |
+| 4 | بيانات التواصل | ✅ جزئي | روابط `tel:` / `mailto:`، والبيانات الحقيقية من لوحة التحكم تدخل الـ JSON-LD تلقائيًا. البيانات نفسها مطلوبة منك |
+| 5 | Font Awesome | ✅ | subset ذاتي: 26 أيقونة solid + 7 brands، **375 KB → 9.4 KB**، مطابق بالبكسل. أيقونة خارج الـ subset تُختار من لوحة التحكم تحمّل النسخة الكاملة تلقائيًا |
+| 6 | Vercel CDN | ✅ | الصور والخطوط والـ favicons تُخدم من CDN بدل الـ serverless function |
+| 7 | التباين | ✅ | زر واتساب + زر "تواصل" بالمنتجات: نفس الأخضر، والأيقونة/النص `#050B18` (لون النص الداكن المستخدم أصلًا على كل الأزرار الفاتحة): 1.98 → **9.92:1**. تعليق الكود: `#475569` → `#7A8BA3` (2.28 → 4.98:1) |
+| 8 | صورة OG | ✅ | 1200×630، 58 KB، بألوان وخط وشعار الموقع ونص الـ hero الموجود أصلًا |
+| 9 | Favicon | ✅ | `favicon.ico` (16/32/48) + `apple-touch-icon` من مكعّب اللوغو |
+| 10 | Title بكلمات مفتاحية | ✅ | «إتقان تك \| تطوير مواقع وتطبيقات وأتمتة n8n في جنين» |
+| 11 | نسخة إنجليزية برابط مستقل | ✅ | `/en/` يُرسم من السيرفر: `lang=en dir=ltr`، title/description/canonical/OG إنجليزية، والنصوص الإنجليزية جاهزة قبل الـ JS. `hreflang` (ar/en/x-default) + sitemap بالنسختين. زر اللغة يغيّر الرابط والعنوان بدون reload |
+| 12 | تنظيف | ✅ | `orginal.png` → `logo.png` (ضغط lossless −18%) + redirect 301 من الاسم القديم، حذف النسخة المكررة، نسخة 677w لشاشات 3x، لوحة التحكم تستخدم AVIF |
+| 13 | الاختبارات الفاشلة | ✅ | 23 فشل موجود مسبقًا → **0**. لم يتم تخطي أو إضعاف أي اختبار. كشفت الاختبارات 3 أخطاء حقيقية وتم إصلاحها: id مكرر (`f-email`)، حقول بدون `required`، وزر التبويب AR/EN في لوحة التحكم كان يخفي القوائم |
+| 14 | meta http-equiv | ✅ | حذف `X-Frame-Options` / `X-Content-Type-Options` / `frame-ancestors` من `<meta>` (المتصفح يتجاهلها، والسيرفر يرسلها كـ headers) + تضييق CSP |
+| 15 | Minification | ❌ لم يُنفّذ | القياس الفعلي: **1.4 KB brotli فقط (~7%)**، وليس 10–15% كما قدّرت. التكلفة: binary بحجم 11.6 MB في الـ function + 80–200ms لكل cold start (أبطأ)، أو build step + dependency. الخسارة أكبر من الربح. أنفّذه كـ build-time script إن أردت |
+| 16 | قائمة الجوال | ✅ | focus ينتقل للقائمة، Tab يدور داخلها، Escape يغلقها ويعيد الـ focus. لا يظهر focus ring لمستخدمي الماوس |
+| 17 | التراخيص | ✅ | OFL لـ Cairo و Syne + ترخيص Font Awesome في `public/fonts/` |
 
 ---
 
-## 3. قياسات قبل / بعد
+## 3. قياسات قبل / بعد (main ← HEAD)
 
-### أحجام الملفات
-| الملف | قبل | بعد | الفرق |
+### الصفحة كاملة (Chromium، أول زيارة، بدون cache، أحجام raw)
+| | main | HEAD | الفرق |
 |---|---:|---:|---:|
-| لوغو (يُحمَّل في الصفحة، شاشة 1x) | 119,605 B (PNG) | 3,580 B (AVIF) | **−97.0%** |
-| لوغو (شاشة 2x/retina) | 119,605 B | 8,609 B (AVIF) / 12,920 B (WebP) | −92.8% |
-| Google Fonts CSS (حاجب للـ render) | 17,733 B | 0 B | −100% |
-| ملفات الخطوط woff2 | 99,300 B | 99,324 B | نفس الملفات (أصبحت same-origin) |
-| `index.html` raw | 74,021 B | 83,974 B | +9,953 B |
-| `index.html` gzip -9 | 17,832 B | 20,070 B | +2,238 B (JSON-LD + meta + `@font-face`) |
+| إجمالي الحجم: عربي | 700,995 B | 216,795 B | **−69.1%** |
+| إجمالي الحجم: إنجليزي | 717,635 B | 233,443 B | **−67.5%** |
+| عدد الطلبات: عربي | 10 | 8 | −2 |
+| Origins خارجية | 3 (googleapis, gstatic, cdnjs) | **0** | −3 |
+| Stylesheets خارجية حاجبة للـ render | 2 | **0** | −2 |
 
-### الصفحة كاملة (Chromium، أول زيارة، بدون cache)
-| | قبل | بعد | الفرق |
-|---|---:|---:|---:|
-| إجمالي الحجم — عربي | 700,995 B | 577,349 B | **−17.6%** |
-| إجمالي الحجم — إنجليزي | 717,635 B | 593,997 B | −17.2% |
-| عدد الطلبات — عربي | 10 | 9 | −1 |
-| Origins خارجية | 3 (googleapis, gstatic, cdnjs) | 1 (cdnjs) | −2 |
-| موارد حاجبة للـ render | 2 stylesheets خارجية | 1 (Font Awesome) | −1 |
+### الملفات
+| الملف | main | HEAD |
+|---|---:|---:|
+| اللوغو (شاشة 1x) | 119,605 B PNG | 3,580 B AVIF (−97%) |
+| اللوغو PNG (fallback/OG) | 119,605 B | 98,084 B (lossless) |
+| Font Awesome (CSS + خطوط) | 375,706 B | 9,369 B (−97.5%) |
+| Google Fonts CSS | 17,733 B | 0 |
+| `index.html` كما يُرسل: raw / gzip / brotli | 74,021 / 17,825 / 14,967 | 92,299 / 22,797 / 18,988 |
 
-> ملاحظة: الأرقام raw (بدون gzip/brotli). أكبر وزن متبقٍّ هو Font Awesome: **375 KB** من 577 KB (القرار #5).
+> HTML نفسه زاد ~4 KB brotli، والسبب: JSON-LD، و meta tags، و `@font-face`، و CSS الأيقونات المضمّن (بدل ملف 102 KB خارجي)، و JS الجديد (لغة/رابط، قائمة الجوال، structured data). المحصلة على الصفحة: −484 KB.
 
 ---
 
 ## 4. ما تبقى ويحتاج قرارك (مرتب بالأولوية)
 
-1. **🔴 إصلاح `connect-mongo@^5.1.1` → `^5.1.0` وتحديث lockfile.** بدونه `npm ci` يفشل (CI أحمر وغالبًا deploy على Vercel فاشل). ⚠️ انتبه: إصلاحه سيجعل Vercel ينشر لأول مرة كل تغييرات MongoDB الأخيرة على main (sessions + data في Mongo) — تأكد أن `MONGODB_URI` مضبوط في Vercel قبل الدمج. لم أصلحه هنا لأنه قرار نشر وليس تحسين أداء. الـ CI على هذا الـ PR سيفشل لنفس السبب.
-2. **🔴 ضبط `SITE_URL` في Vercel** (مثلًا `https://<الدومين>`). بدونه الروابط المطلقة تعتمد على Host الطلب، وهذا يعمل لكن قد يُظهر دومين `*.vercel.app` في canonical/sitemap إن زار أحد الموقع عبره.
-3. **🟠 اسم البراند في المحتوى**: النصوص الظاهرة والبيانات (`data/site.json` + `DEFAULT` في الصفحة) تقول **"هايتك / HiTech"** و`hitech.ps`، بينما العنوان والـ structured data "إتقان تك - Itqan Tech". هذا تضارب في هوية الكيان عند Google. لم ألمسه لأنه نص تسويقي — يمكن تعديله من لوحة التحكم.
-4. **🟠 بيانات تواصل placeholder**: الهاتف `+970 59 000 0000`، روابط السوشال تشير لـ `facebook.com` الرئيسية، العنوان في البيانات "فلسطين" فقط. لذلك **لم أضع** `telephone` ولا `sameAs` ولا `geo` ولا ساعات العمل في LocalBusiness (وضع بيانات وهمية يضر). زوّدني بالبيانات الحقيقية لإضافتها، وأيضًا لتحويل روابط الـ footer إلى `tel:` و`mailto:`.
-5. **🟠 Font Awesome (375 KB)**: CSS 102 KB + solid 157 KB + brands 117 KB من أجل ~35 أيقونة. الحل: subset أو SVG sprite. **لكن** لوحة التحكم تسمح باختيار أي اسم أيقونة FA للخدمات، فالـ subset سيقيّد هذا. يحتاج قرارك.
-6. **🟠 Vercel يمرر كل الملفات الثابتة عبر الـ serverless function** (`builds` + route `/(.*)` → `server.js`). نقل `public/` ليُخدم من CDN مباشرة سيحسّن TTFB بشكل كبير، لكنه تغيير في إعداد النشر.
-7. **🟡 تباين ألوان (WCAG AA)** — لم أغيّر أي لون:
-   - زر واتساب العائم: أيقونة بيضاء على `#25D366` = **1.98:1** (المطلوب 3:1 لعناصر الواجهة).
-   - زر "تواصل" في بطاقات المنتجات: نص أبيض 14px على `#128C7E` = **4.14:1** (المطلوب 4.5:1).
-   - تعليق الكود في كرت الـ hero `#475569` = 2.28:1 (أصبح `aria-hidden` لأنه زخرفي).
-   - باقي الألوان الأساسية تنجح (النص الرمادي 6.3–7.6:1، الأزرق 8–9:1).
-8. **🟡 صورة Open Graph مخصصة 1200×630** بدل اللوغو (أفضل شكل عند المشاركة على واتساب/فيسبوك) — أصل تصميمي يحتاج موافقتك.
-9. **🟡 Favicon** غير موجود (`/favicon.ico` يرجع 404 في كل زيارة). يحتاج أصل بصري معتمد.
-10. **🟡 Title الرئيسية**: يمكن إضافة كلمات مفتاحية/موقع (مثل "تطوير مواقع وتطبيقات في جنين"). لم ألمسه لأنه نص تسويقي ومُثبّت في اختبار E2E.
-11. **🟡 النسخة الإنجليزية** على نفس الرابط وتُبدَّل بالـ JS فقط ⇒ Google لا يفهرسها كنسخة مستقلة ولا يمكن استخدام `hreflang`. الحل يحتاج روابط منفصلة (`/en/`).
-12. **🟢 تنظيف**: `img/orginal.png` في جذر الريبو نسخة مكررة غير مستخدمة (السيرفر يخدم `public/` فقط) + خطأ إملائي في الاسم. لوحة التحكم ما زالت تستخدم PNG الكبير (غير مُفهرسة، أثرها محدود).
-13. **🟢 اختبارات E2E**: إصلاح الـ 17 اختبار الفاشلة مسبقًا (locators غير محددة بدقة).
-14. **🟢 `<meta http-equiv="X-Frame-Options">` و `frame-ancestors`** داخل `<meta>` يتجاهلهما المتصفح (تحذيرات console). السيرفر يرسلهما كـ headers أصلًا، فيمكن حذفهما.
-15. **🟢 Minification للـ CSS/JS المضمّن**: يحتاج إضافة build step/dependency — المكسب صغير (~10–15% من HTML بعد gzip).
-16. **🟢 قائمة الجوال**: إضافة focus trap وإغلاق بـ Escape (تحسين سلوكي بسيط).
-17. **🟢 Licenses**: خطوط Cairo و Syne مرخّصة OFL (تسمح بالاستضافة الذاتية). يُستحسن إضافة ملف الترخيص في `public/fonts/`.
+1. 🔴 **الخطوات الخمس في أعلى الملف** (SESSION_SECRET، MONGODB_URI، SITE_URL، محتوى القاعدة، بيانات التواصل).
+2. 🟠 **آراء العملاء والأرقام والمشاريع** (6 آراء بأسماء عامة، "50+ مشروع"، "98% رضا"، مشاريع مثل "متجر الأزياء الفلسطيني") تبدو بيانات قالب. عرض آراء غير حقيقية كأنها حقيقية يضر بالثقة وقد يُعتبر مضللًا. استبدلها بآراء وأرقام حقيقية أو احذفها. لم أضف لها `Review` schema لهذا السبب.
+3. 🟠 **`npm audit`:** ثغرات في `body-parser` و `qs` (عبر Express) و `nodemailer` (high). موجودة مسبقًا، والترقية قرار منفصل (nodemailer تحتاج major).
+4. 🟡 **ألوان اللوحة:** ملف هوية البراند (brand registry) يحدد `#10233F / #1A3A6B / #4FC3F7`، والموقع يستخدم `#060D1F / #38BDF8 / #818CF8`. لم ألمس ألوان الموقع حسب تعليماتك. قرّر أي واحدة هي المعتمدة.
+5. 🟡 **`env: {NODE_ENV: production}` في `vercel.json`** لا يظهر في إعدادات الـ function الناتجة عن `vercel build`. تأكد أن `NODE_ENV=production` مضبوط في إعدادات مشروع Vercel، فهو يتحكم في `secure` cookies و HSTS و `trust proxy`.
+6. 🟡 **سنة حقوق النشر** في الـ footer ما زالت `© 2025`.
+7. 🟢 **Minification** (القرار 15): كـ build-time script إن أردت، والمكسب ~1.4 KB لكل تحميل HTML.
+8. 🟢 **إعدادات Vercel القديمة (`builds`/`routes`)**: تعمل وتم التحقق منها، لكن Vercel يصنّفها legacy. الانتقال لـ zero-config يحتاج نقل الـ HTML خارج `public/` أولًا.
 
 ---
 
-## 5. ملفات تم تغييرها
-- `public/index.html` — كل تحسينات الأداء/SEO/الوصول (بدون تغيير بصري)
-- `public/itqan-cp9x.html` — alt + meta description + robots noindex
-- `public/img/logo-178|356.{avif,webp}` — جديد
-- `public/fonts/*.woff2` — جديد (Cairo, Syne)
-- `server.js` — cache headers + AVIF mime + تسجيل `routes/seo.js`
-- `routes/seo.js` — جديد: `/`, `/robots.txt`, `/sitemap.xml`
+## 5. الملفات المتغيرة (main..HEAD)
+- `public/index.html`: كل تحسينات الأداء/SEO/الوصول + القرارات المعتمدة
+- `public/itqan-cp9x.html`: alt، favicon، noindex، AVIF، إصلاح التبويبات، اسم البراند
+- `routes/seo.js` (جديد): `/`, `/en/`, `robots.txt`, `sitemap.xml`
+- `server.js`: cache headers، AVIF mime، redirect للوغو، تحذير SESSION_SECRET
+- `vercel.json`: CDN للأصول الثابتة
+- `package.json` / `package-lock.json`: إصلاح connect-mongo فقط، **بدون أي dependency جديدة**
+- `.github/workflows/playwright.yml`: MongoDB service + بيانات اختبار عشوائية
+- `tests/e2e/*`: إصلاحات + `seo.spec.js` جديد
+- `data/site.json`: اسم البراند
+- `public/img/*`, `public/fonts/*`, `public/favicon.ico`, `public/apple-touch-icon.png`: أصول جديدة
 
-**لم يتم**: إضافة أي dependency، لمس `.env*` أو أي secrets، تعديل `package.json`/lockfile/`vercel.json`، أو push على main.
+**لم يتم:** لمس `.env*` أو أي secrets حقيقية، إضافة dependencies، أو push على main.
