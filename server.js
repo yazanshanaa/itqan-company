@@ -12,6 +12,15 @@ if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
   process.exit(1);
 }
 
+// connect-mongo encrypts sessions with kruptein, which silently refuses to store a session
+// when the secret lacks 2 uppercase, 2 lowercase, 2 digits and 2 symbols (admin login then
+// appears to work but every following request is logged out). Warn loudly at startup.
+const secretCounts = [/[A-Z]/g, /[a-z]/g, /[0-9]/g, /[!@#$%^&*()_+\-=[\]{};':"|,.<>/?]/g]
+  .map(re => (process.env.SESSION_SECRET.match(re) || []).length);
+if (secretCounts.some(n => n < 2)) {
+  console.warn('WARNING: SESSION_SECRET needs at least 2 uppercase letters, 2 lowercase letters, 2 digits and 2 symbols for the MongoDB session store; admin sessions will not persist until it does.');
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
