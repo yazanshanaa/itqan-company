@@ -8,6 +8,14 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    # server.js needs MongoDB (sessions + site data) to boot
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+    env:
+      MONGODB_URI: mongodb://localhost:27017
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -15,8 +23,21 @@ jobs:
         node-version: lts/*
     - name: Install dependencies
       run: npm ci
+    - name: Generate throwaway test credentials
+      # Random values per run: nothing secret lives in the repo. The admin hash is
+      # seeded into the empty CI database by lib/seed.js on server start.
+      run: |
+        PASS=$(openssl rand -hex 16)
+        # connect-mongo's session encryption (kruptein) rejects secrets without at least
+        # 2 upper, 2 lower, 2 digits and 2 symbols; the suffix guarantees each class
+        SECRET="$(openssl rand -hex 32)Aa1!Bb2@"
+        echo "::add-mask::$PASS"
+        echo "::add-mask::$SECRET"
+        echo "SESSION_SECRET=$SECRET" >> "$GITHUB_ENV"
+        echo "TEST_ADMIN_PASS=$PASS" >> "$GITHUB_ENV"
+        echo "ADMIN_PASS_HASH=$(node -e "console.log(require('bcryptjs').hashSync(process.argv[1], 10))" "$PASS")" >> "$GITHUB_ENV"
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install --with-deps chromium
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4

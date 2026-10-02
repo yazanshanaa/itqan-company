@@ -12,6 +12,15 @@ if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) {
   process.exit(1);
 }
 
+// connect-mongo encrypts sessions with kruptein, which silently refuses to store a session
+// when the secret lacks 2 uppercase, 2 lowercase, 2 digits and 2 symbols (admin login then
+// appears to work but every following request is logged out). Warn loudly at startup.
+const secretCounts = [/[A-Z]/g, /[a-z]/g, /[0-9]/g, /[!@#$%^&*()_+\-=[\]{};':"|,.<>/?]/g]
+  .map(re => (process.env.SESSION_SECRET.match(re) || []).length);
+if (secretCounts.some(n => n < 2)) {
+  console.warn('WARNING: SESSION_SECRET needs at least 2 uppercase letters, 2 lowercase letters, 2 digits and 2 symbols for the MongoDB session store; admin sessions will not persist until it does.');
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -113,7 +122,32 @@ app.use('/api/contact', (req, res, next) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/data', require('./routes/data'));
 app.use('/api/contact', require('./routes/contact'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('./routes/seo'));
+// public/index.html is a template rendered by routes/seo.js; never let express.static serve it
+// raw through path variants such as //index.html, /./index.html or /%69ndex.html
+app.use((req, res, next) => {
+  let p;
+  try { p = path.posix.normalize(decodeURIComponent(req.path)); } catch { return next(); }
+  if (p.toLowerCase() === '/index.html') return res.redirect(301, '/');
+  next();
+});
+
+// The logo was renamed; keep the old URL working for anything that linked to it
+app.get('/img/orginal.png', (req, res) => res.redirect(301, '/img/logo.png'));
+
+// Express 4's mime table predates AVIF
+express.static.mime.define({ 'image/avif': ['avif'] });
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders(res, filePath) {
+    // Font files carry a version in their name, so they can be cached forever.
+    // Images keep stable names, so cache them for a week and revalidate in the background.
+    if (/[\\/]fonts[\\/]/.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    } else if (/\.(png|jpe?g|webp|avif|svg|ico)$/i.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+    }
+  }
+}));
 
 // Initialize database and seed if needed
 const initPromise = seedDatabase().catch(err => {

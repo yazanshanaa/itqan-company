@@ -5,28 +5,31 @@ const { waitForHomeContent } = require('./helpers');
 
 // ── Desktop navigation ────────────────────────────────────────────────────────
 test.describe('Navigation — Desktop', () => {
+  // The Mobile Chrome project also runs this file; the nav menu only shows above 768px
+  test.use({ viewport: { width: 1280, height: 800 } });
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await waitForHomeContent(page);
   });
 
   test('clicking "services" link scrolls #services into view', async ({ page }) => {
-    await page.locator('#navbar a[href="#services"]').click();
+    await page.locator('#navbar .nav-menu a[href="#services"]').click();
     await expect(page.locator('#services')).toBeInViewport({ ratio: 0.3 });
   });
 
   test('clicking "portfolio" link scrolls #portfolio into view', async ({ page }) => {
-    await page.locator('#navbar a[href="#portfolio"]').click();
+    await page.locator('#navbar .nav-menu a[href="#portfolio"]').click();
     await expect(page.locator('#portfolio')).toBeInViewport({ ratio: 0.3 });
   });
 
   test('clicking "about" link scrolls #about into view', async ({ page }) => {
-    await page.locator('#navbar a[href="#about"]').click();
+    await page.locator('#navbar .nav-menu a[href="#about"]').click();
     await expect(page.locator('#about')).toBeInViewport({ ratio: 0.3 });
   });
 
   test('clicking "contact" link scrolls #contact into view', async ({ page }) => {
-    await page.locator('#navbar a[href="#contact"]').click();
+    await page.locator('#navbar .nav-menu a[href="#contact"]').click();
     await expect(page.locator('#contact')).toBeInViewport({ ratio: 0.3 });
   });
 
@@ -104,17 +107,30 @@ test.describe('Navigation — Mobile (390 × 844)', () => {
     await expect(page.locator('#mobile-menu')).toBeHidden();
   });
 
+  test('the close button (×) closes the menu', async ({ page }) => {
+    await page.locator('[onclick="toggleMobile()"]').first().click();
+    await expect(page.locator('#mobile-menu')).toBeVisible();
+    // Fails with "intercepts pointer events" if the navbar logo covers the button again
+    await page.locator('.mobile-close').click();
+    await expect(page.locator('#mobile-menu')).toBeHidden();
+    await expect(page.locator('.hamburger')).toBeFocused();
+  });
+
+  // The mobile language buttons live inside the hamburger menu
   test('mobile language buttons #btn-ar-m and #btn-en-m are visible', async ({ page }) => {
+    await page.locator('[onclick="toggleMobile()"]').first().click();
     await expect(page.locator('#btn-ar-m')).toBeVisible();
     await expect(page.locator('#btn-en-m')).toBeVisible();
   });
 
   test('mobile EN button switches html[dir] to ltr', async ({ page }) => {
+    await page.locator('[onclick="toggleMobile()"]').first().click();
     await page.locator('#btn-en-m').click();
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   });
 
   test('mobile AR button restores html[dir] to rtl', async ({ page }) => {
+    await page.locator('[onclick="toggleMobile()"]').first().click();
     await page.locator('#btn-en-m').click();
     await page.locator('#btn-ar-m').click();
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');

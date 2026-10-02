@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none';">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; connect-src 'self';">
   <title>إتقان تك | لوحة التحكم</title>
+  <meta name="description" content="لوحة تحكم موقع إتقان تك - Itqan Tech (للمسؤولين فقط).">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -28,7 +30,7 @@
     .login-logo-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#050B18;font-weight:800}
     .login-logo-text{font-size:26px;font-weight:800}
     .login-logo-text span{color:var(--primary)}
-    .site-logo-img{height:68px;width:auto;border-radius:10px;display:block;object-fit:contain}
+    .site-logo-img{height:68px;width:auto;aspect-ratio:677/369;border-radius:10px;display:block;object-fit:contain}
     .login-logo .site-logo-img{height:126px;border-radius:14px}
     .login-title{text-align:center;font-size:22px;font-weight:700;margin-bottom:8px}
     .login-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:32px}
@@ -182,7 +184,7 @@
 <div class="login-wrap" id="login-page">
   <div class="login-card">
     <div class="login-logo">
-      <img src="img/orginal.png" alt="Itqan" class="site-logo-img">
+      <picture><source type="image/avif" srcset="/img/logo-178.avif 178w, /img/logo-356.avif 356w, /img/logo-677.avif 677w" sizes="232px"><source type="image/webp" srcset="/img/logo-178.webp 178w, /img/logo-356.webp 356w, /img/logo-677.webp 677w" sizes="232px"><img src="/img/logo.png" alt="إتقان تك - Itqan Tech" class="site-logo-img" width="677" height="369"></picture>
     </div>
     <div class="login-title">لوحة التحكم</div>
     <div class="login-sub">أدخل كلمة المرور للوصول إلى لوحة التحكم</div>
@@ -204,7 +206,7 @@
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
-      <img src="img/orginal.png" alt="Itqan" class="site-logo-img">
+      <picture><source type="image/avif" srcset="/img/logo-178.avif 178w, /img/logo-356.avif 356w, /img/logo-677.avif 677w" sizes="125px"><source type="image/webp" srcset="/img/logo-178.webp 178w, /img/logo-356.webp 356w, /img/logo-677.webp 677w" sizes="125px"><img src="/img/logo.png" alt="إتقان تك - Itqan Tech" class="site-logo-img" width="677" height="369"></picture>
       <span class="sidebar-badge">Admin</span>
     </div>
     <nav class="sidebar-nav">
@@ -283,14 +285,14 @@
         <div class="card">
           <div class="card-title"><i class="fas fa-building"></i>معلومات الشركة</div>
           <div class="form-row">
-            <div class="fg"><label>اسم الشركة (عربي)</label><input id="c-nameAr" placeholder="هايتك"></div>
-            <div class="fg"><label>Company Name (English)</label><input id="c-nameEn" placeholder="HiTech"></div>
+            <div class="fg"><label>اسم الشركة (عربي)</label><input id="c-nameAr" placeholder="إتقان تك"></div>
+            <div class="fg"><label>Company Name (English)</label><input id="c-nameEn" placeholder="Itqan Tech"></div>
           </div>
           <div class="form-row">
             <div class="fg"><label>رقم الهاتف</label><input id="c-phone" placeholder="+970 59 000 0000"></div>
             <div class="fg"><label>رقم واتساب</label><input id="c-wa" placeholder="+970590000000"></div>
           </div>
-          <div class="fg"><label>البريد الإلكتروني</label><input id="c-email" placeholder="info@hitech.ps"></div>
+          <div class="fg"><label>البريد الإلكتروني</label><input id="c-email" placeholder="name@example.com"></div>
           <div class="form-row">
             <div class="fg"><label>العنوان (عربي)</label><input id="c-addrAr" placeholder="جنين، فلسطين"></div>
             <div class="fg"><label>Address (English)</label><input id="c-addrEn" placeholder="Jenin, Palestine"></div>
@@ -559,7 +561,7 @@
     <div class="fg"><label>الحرف الأول للصورة (مثل: أ، م، س)</label><input id="testi-avatar" placeholder="أ" maxlength="2"></div>
     <div class="fg"><label>الاسم</label><input id="testi-name" placeholder="أحمد الخالد"></div>
     <div class="fg"><label>الوظيفة / الدور</label><input id="testi-role" placeholder="صاحب متجر إلكتروني"></div>
-    <div class="fg"><label>نص الشهادة</label><textarea id="testi-text" placeholder="تجربتي مع هايتك كانت..."></textarea></div>
+    <div class="fg"><label>نص الشهادة</label><textarea id="testi-text" placeholder="تجربتي مع إتقان تك كانت..."></textarea></div>
     <div class="modal-footer">
       <button class="btn btn-primary" onclick="saveTesti()"><i class="fas fa-save"></i>حفظ</button>
       <button class="btn btn-outline" onclick="closeModal('testi-modal')">إلغاء</button>
@@ -662,10 +664,10 @@
 <script>
   // ======= DEFAULT DATA (same as main site) =======
   const DEFAULT = {
-    company:{nameAr:"هايتك",nameEn:"HiTech",phone:"+970 59 000 0000",email:"info@hitech.ps",whatsapp:"+970590000000",address:"جنين، فلسطين",addressEn:"Jenin, Palestine",facebook:"https://facebook.com",instagram:"https://instagram.com",tiktok:"https://tiktok.com",linkedin:"https://linkedin.com",socialVisible:{facebook:true,instagram:true,tiktok:true,linkedin:true}},
+    company:{nameAr:"إتقان تك",nameEn:"Itqan Tech",phone:"+970 59 000 0000",email:"",whatsapp:"+970590000000",address:"جنين، فلسطين",addressEn:"Jenin, Palestine",facebook:"https://facebook.com",instagram:"https://instagram.com",tiktok:"https://tiktok.com",linkedin:"https://linkedin.com",socialVisible:{facebook:true,instagram:true,tiktok:true,linkedin:true}},
     content:{
-      ar:{"nav.services":"خدماتنا","nav.portfolio":"أعمالنا","nav.about":"عنّا","nav.contact":"تواصل معنا","nav.cta":"ابدأ مشروعك","nav.home":"الرئيسية","hero.badge":"شريكك التقني الموثوق","hero.line1":"نبني مستقبلك","hero.line2":"الرقمي","hero.subtitle":"نصمم ونطور مواقع ويب متكاملة، تطبيقات موبايل، وحلول ذكاء اصطناعي تُحوّل أفكارك إلى واقع رقمي مذهل","hero.cta1":"ابدأ مشروعك الآن","hero.cta2":"استعرض أعمالنا","hero.scroll":"اكتشف أكثر","stat.projects":"مشروع منجز","stat.satisfaction":"رضا العملاء","svc.badge":"خدماتنا","svc.titlehl":"متكاملة","svc.subtitle":"نقدم طيفاً واسعاً من الخدمات التقنية لمساعدة عملك على النمو والتوسع في العالم الرقمي","svc.more":"اعرف أكثر","about.badge":"من نحن","about.titlehl":"بناء الحلول التقنية","about.desc":"هايتك شركة تقنية متخصصة في تطوير الحلول الرقمية. نجمع بين الإبداع التقني والفهم العميق لاحتياجات السوق.","about.cta":"تواصل مع فريقنا","port.badge":"أعمالنا","port.titlehl":"نفخر بها","port.cta":"ابدأ مشروعك","con.badge":"تواصل معنا","con.titlehl":"مشروع في ذهنك؟","con.subtitle":"نحن هنا لمساعدتك في تحقيق رؤيتك الرقمية. تواصل معنا وابدأ رحلتك التقنية","con.phoneL":"الهاتف","con.emailL":"البريد الإلكتروني","con.addrL":"الموقع","con.waL":"واتساب","con.address":"جنين، فلسطين","form.name":"الاسم الكامل","form.email":"البريد الإلكتروني","form.svc":"الخدمة المطلوبة","form.pick":"اختر الخدمة...","form.msg":"رسالتك","form.send":"إرسال الرسالة","foot.desc":"شركة هايتك لحلول التقنية — نبني مستقبلك الرقمي بأحدث التقنيات.","foot.services":"خدماتنا","foot.quick":"روابط سريعة","foot.contact":"تواصل","foot.copy":"© 2025 هايتك. جميع الحقوق محفوظة","foot.admin":"⚙ لوحة التحكم"},
-      en:{"nav.services":"Services","nav.portfolio":"Portfolio","nav.about":"About","nav.contact":"Contact","nav.cta":"Start Project","nav.home":"Home","hero.badge":"Your Trusted Tech Partner","hero.line1":"We Build Your","hero.line2":"Digital Future","hero.subtitle":"We design and develop complete websites, mobile apps, and AI solutions that transform your ideas into amazing digital reality","hero.cta1":"Start Your Project","hero.cta2":"View Our Work","hero.scroll":"Discover More","stat.projects":"Projects Done","stat.satisfaction":"Satisfaction","svc.badge":"Our Services","svc.titlehl":"Complete","svc.subtitle":"We offer a wide range of tech services to help your business grow in the digital world","svc.more":"Learn More","about.badge":"About Us","about.titlehl":"Building Tech Solutions","about.desc":"HiTech is a tech company specializing in digital solutions. We combine technical creativity with deep market understanding.","about.cta":"Contact Our Team","port.badge":"Portfolio","port.titlehl":"We're Proud Of","port.cta":"Start Your Project","con.badge":"Contact Us","con.titlehl":"Project in Mind?","con.subtitle":"We're here to help achieve your digital vision. Contact us and start your tech journey","con.phoneL":"Phone","con.emailL":"Email","con.addrL":"Location","con.waL":"WhatsApp","con.address":"Jenin, Palestine","form.name":"Full Name","form.email":"Email Address","form.svc":"Required Service","form.pick":"Select service...","form.msg":"Your Message","form.send":"Send Message","foot.desc":"HiTech Technology Solutions — Building your digital future with the latest technologies.","foot.services":"Services","foot.quick":"Quick Links","foot.contact":"Contact","foot.copy":"© 2025 HiTech. All Rights Reserved","foot.admin":"⚙ Admin Panel"}
+      ar:{"nav.services":"خدماتنا","nav.portfolio":"أعمالنا","nav.about":"عنّا","nav.contact":"تواصل معنا","nav.cta":"ابدأ مشروعك","nav.home":"الرئيسية","hero.badge":"شريكك التقني الموثوق","hero.line1":"نبني مستقبلك","hero.line2":"الرقمي","hero.subtitle":"نصمم ونطور مواقع ويب متكاملة، تطبيقات موبايل، وحلول ذكاء اصطناعي تُحوّل أفكارك إلى واقع رقمي مذهل","hero.cta1":"ابدأ مشروعك الآن","hero.cta2":"استعرض أعمالنا","hero.scroll":"اكتشف أكثر","stat.projects":"مشروع منجز","stat.satisfaction":"رضا العملاء","svc.badge":"خدماتنا","svc.titlehl":"متكاملة","svc.subtitle":"نقدم طيفاً واسعاً من الخدمات التقنية لمساعدة عملك على النمو والتوسع في العالم الرقمي","svc.more":"اعرف أكثر","about.badge":"من نحن","about.titlehl":"بناء الحلول التقنية","about.desc":"إتقان تك شركة تقنية متخصصة في تطوير الحلول الرقمية. نجمع بين الإبداع التقني والفهم العميق لاحتياجات السوق.","about.cta":"تواصل مع فريقنا","port.badge":"أعمالنا","port.titlehl":"نفخر بها","port.cta":"ابدأ مشروعك","con.badge":"تواصل معنا","con.titlehl":"مشروع في ذهنك؟","con.subtitle":"نحن هنا لمساعدتك في تحقيق رؤيتك الرقمية. تواصل معنا وابدأ رحلتك التقنية","con.phoneL":"الهاتف","con.emailL":"البريد الإلكتروني","con.addrL":"الموقع","con.waL":"واتساب","con.address":"جنين، فلسطين","form.name":"الاسم الكامل","form.email":"البريد الإلكتروني","form.svc":"الخدمة المطلوبة","form.pick":"اختر الخدمة...","form.msg":"رسالتك","form.send":"إرسال الرسالة","foot.desc":"شركة إتقان تك لحلول التقنية — نبني مستقبلك الرقمي بأحدث التقنيات.","foot.services":"خدماتنا","foot.quick":"روابط سريعة","foot.contact":"تواصل","foot.copy":"© 2025 إتقان تك. جميع الحقوق محفوظة","foot.admin":"⚙ لوحة التحكم"},
+      en:{"nav.services":"Services","nav.portfolio":"Portfolio","nav.about":"About","nav.contact":"Contact","nav.cta":"Start Project","nav.home":"Home","hero.badge":"Your Trusted Tech Partner","hero.line1":"We Build Your","hero.line2":"Digital Future","hero.subtitle":"We design and develop complete websites, mobile apps, and AI solutions that transform your ideas into amazing digital reality","hero.cta1":"Start Your Project","hero.cta2":"View Our Work","hero.scroll":"Discover More","stat.projects":"Projects Done","stat.satisfaction":"Satisfaction","svc.badge":"Our Services","svc.titlehl":"Complete","svc.subtitle":"We offer a wide range of tech services to help your business grow in the digital world","svc.more":"Learn More","about.badge":"About Us","about.titlehl":"Building Tech Solutions","about.desc":"Itqan Tech is a tech company specializing in digital solutions. We combine technical creativity with deep market understanding.","about.cta":"Contact Our Team","port.badge":"Portfolio","port.titlehl":"We're Proud Of","port.cta":"Start Your Project","con.badge":"Contact Us","con.titlehl":"Project in Mind?","con.subtitle":"We're here to help achieve your digital vision. Contact us and start your tech journey","con.phoneL":"Phone","con.emailL":"Email","con.addrL":"Location","con.waL":"WhatsApp","con.address":"Jenin, Palestine","form.name":"Full Name","form.email":"Email Address","form.svc":"Required Service","form.pick":"Select service...","form.msg":"Your Message","form.send":"Send Message","foot.desc":"Itqan Tech Solutions — Building your digital future with the latest technologies.","foot.services":"Services","foot.quick":"Quick Links","foot.contact":"Contact","foot.copy":"© 2025 Itqan Tech. All Rights Reserved","foot.admin":"⚙ Admin Panel"}
     },
     services:{
       ar:[{icon:"fa-globe",title:"مواقع الويب",desc:"نبني مواقع احترافية سريعة ومتجاوبة"},{icon:"fa-mobile-alt",title:"تطبيقات الموبايل",desc:"تطبيقات iOS وAndroid عالية الأداء"},{icon:"fa-paint-brush",title:"تصميم UI/UX",desc:"تصميم تجارب مستخدم استثنائية"},{icon:"fa-shopping-cart",title:"المتاجر الإلكترونية",desc:"متاجر إلكترونية متكاملة بأنظمة دفع آمنة"},{icon:"fa-robot",title:"نماذج الذكاء الاصطناعي",desc:"دمج AI في أعمالك لأتمتة العمليات"},{icon:"fa-headset",title:"الدعم والصيانة",desc:"دعم فني متواصل وصيانة دورية"}],
@@ -679,8 +681,8 @@
       en:[{icon:"💬",title:"Consultation",desc:"We sit with you to fully understand your idea"},{icon:"📋",title:"Planning",desc:"We create a clear plan and precise timeline"},{icon:"🎨",title:"Design",desc:"We design interfaces and present them for approval"},{icon:"⚙️",title:"Development",desc:"We build the project with the highest quality standards"},{icon:"🚀",title:"Delivery",desc:"We launch your project and provide ongoing support"}]
     },
     testimonials:{
-      ar:[{text:"هايتك غيّرت وجه عملي التجاري كلياً. الموقع احترافي جداً وعملاؤنا يثنون عليه دائماً.",name:"أحمد الخالد",role:"صاحب متجر إلكتروني",avatar:"أ",stars:5},{text:"سلّموا المشروع قبل الموعد المحدد وبجودة فاقت توقعاتي. سأتعامل معهم حتماً مجدداً.",name:"سارة محمود",role:"مديرة مشاريع",avatar:"س",stars:5},{text:"تطبيق الموبايل حصل على تقييم ممتاز في المتاجر. يفهمون احتياجات العميل بشكل رائع.",name:"محمد عبد الله",role:"مؤسس شركة ناشئة",avatar:"م",stars:5},{text:"الدعم الفني ممتاز وسريع الاستجابة. أي مشكلة يحلونها فوراً.",name:"ليلى حسن",role:"طبيبة",avatar:"ل",stars:5},{text:"بنوا لنا متجراً متكاملاً بنظام دفع آمن. المبيعات ارتفعت بشكل ملحوظ بعد الإطلاق.",name:"خالد العمري",role:"صاحب متجر ملابس",avatar:"خ",stars:5},{text:"فريق محترف يعمل بشغف حقيقي. كنت على دراية كاملة بتقدم المشروع طوال الوقت.",name:"نور الدين",role:"مدير تسويق",avatar:"ن",stars:5}],
-      en:[{text:"HiTech completely transformed my business. The website is incredibly professional.",name:"Ahmed Al-Khalid",role:"E-Commerce Owner",avatar:"A",stars:5},{text:"Delivered ahead of schedule with quality that exceeded my expectations.",name:"Sara Mahmoud",role:"Project Manager",avatar:"S",stars:5},{text:"The mobile app received excellent ratings. They understand client needs perfectly.",name:"Mohammed Abdullah",role:"Startup Founder",avatar:"M",stars:5},{text:"Excellent and fast technical support. Any issue gets solved immediately.",name:"Layla Hassan",role:"Doctor",avatar:"L",stars:5},{text:"Sales increased significantly after launch. Thank you HiTech!",name:"Khalid Al-Omari",role:"Fashion Store Owner",avatar:"K",stars:5},{text:"A passionate team that kept me fully informed throughout the project.",name:"Nour Eddine",role:"Marketing Manager",avatar:"N",stars:5}]
+      ar:[{text:"إتقان تك غيّرت وجه عملي التجاري كلياً. الموقع احترافي جداً وعملاؤنا يثنون عليه دائماً.",name:"أحمد الخالد",role:"صاحب متجر إلكتروني",avatar:"أ",stars:5},{text:"سلّموا المشروع قبل الموعد المحدد وبجودة فاقت توقعاتي. سأتعامل معهم حتماً مجدداً.",name:"سارة محمود",role:"مديرة مشاريع",avatar:"س",stars:5},{text:"تطبيق الموبايل حصل على تقييم ممتاز في المتاجر. يفهمون احتياجات العميل بشكل رائع.",name:"محمد عبد الله",role:"مؤسس شركة ناشئة",avatar:"م",stars:5},{text:"الدعم الفني ممتاز وسريع الاستجابة. أي مشكلة يحلونها فوراً.",name:"ليلى حسن",role:"طبيبة",avatar:"ل",stars:5},{text:"بنوا لنا متجراً متكاملاً بنظام دفع آمن. المبيعات ارتفعت بشكل ملحوظ بعد الإطلاق.",name:"خالد العمري",role:"صاحب متجر ملابس",avatar:"خ",stars:5},{text:"فريق محترف يعمل بشغف حقيقي. كنت على دراية كاملة بتقدم المشروع طوال الوقت.",name:"نور الدين",role:"مدير تسويق",avatar:"ن",stars:5}],
+      en:[{text:"Itqan Tech completely transformed my business. The website is incredibly professional.",name:"Ahmed Al-Khalid",role:"E-Commerce Owner",avatar:"A",stars:5},{text:"Delivered ahead of schedule with quality that exceeded my expectations.",name:"Sara Mahmoud",role:"Project Manager",avatar:"S",stars:5},{text:"The mobile app received excellent ratings. They understand client needs perfectly.",name:"Mohammed Abdullah",role:"Startup Founder",avatar:"M",stars:5},{text:"Excellent and fast technical support. Any issue gets solved immediately.",name:"Layla Hassan",role:"Doctor",avatar:"L",stars:5},{text:"Sales increased significantly after launch. Thank you Itqan Tech!",name:"Khalid Al-Omari",role:"Fashion Store Owner",avatar:"K",stars:5},{text:"A passionate team that kept me fully informed throughout the project.",name:"Nour Eddine",role:"Marketing Manager",avatar:"N",stars:5}]
     },
     products:{visible:true,ar:[],en:[]}
   };
@@ -779,7 +781,10 @@
     const parent = btn.closest('.section-page');
     parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    const sibIds = Array.from(parent.querySelectorAll('[id]')).map(e=>e.id).filter(id=>id.startsWith(showId.split('-')[0]+'-'));
+    // Only the tab panels (<prefix>-ar / <prefix>-en); a plain prefix match also hid the
+    // lists inside them (e.g. svcs-list-en), leaving the tab empty after a switch.
+    const prefix = showId.slice(0, showId.lastIndexOf('-'));
+    const sibIds = [prefix+'-ar', prefix+'-en'];
     sibIds.forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
     const show = document.getElementById(showId);
     if(show) show.style.display='block';

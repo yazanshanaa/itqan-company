@@ -7,7 +7,7 @@ const { waitForHomeContent } = require('./helpers');
  * Homepage tests — verifies that all dynamically rendered sections appear
  * correctly after init() fetches /api/data and calls renderAll().
  *
- * Title:  "إتقان تك | حلول تقنية متكاملة"
+ * Title:  "إتقان تك | تطوير مواقع وتطبيقات وأتمتة n8n في جنين"
  * All grids are populated either from the API or from the DEFAULT fallback,
  * so assertions never rely on specific data values — only on presence.
  */
@@ -21,15 +21,21 @@ test.describe('Homepage — Structure & Content', () => {
   // ── Document ─────────────────────────────────────────────────────────────
   test('loads at "/" with the correct page title', async ({ page }) => {
     await expect(page).toHaveURL('/');
-    await expect(page).toHaveTitle('إتقان تك | حلول تقنية متكاملة');
+    await expect(page).toHaveTitle('إتقان تك | تطوير مواقع وتطبيقات وأتمتة n8n في جنين');
   });
 
   // ── Navbar ────────────────────────────────────────────────────────────────
   test('navbar is visible and contains all anchor links', async ({ page }) => {
     const nav = page.locator('#navbar');
     await expect(nav).toBeVisible();
+    // At <=768px the links move into the hamburger menu (Mobile Chrome project)
+    let menu = nav.locator('.nav-menu');
+    if (page.viewportSize().width <= 768) {
+      await nav.locator('.hamburger').click();
+      menu = page.locator('#mobile-menu');
+    }
     for (const href of ['#services', '#portfolio', '#about', '#contact']) {
-      await expect(nav.locator(`a[href="${href}"]`)).toBeVisible();
+      await expect(menu.locator(`a[href="${href}"]`)).toBeVisible();
     }
   });
 

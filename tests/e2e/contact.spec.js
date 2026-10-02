@@ -33,6 +33,11 @@ const VALID_PAYLOAD = {
 // ── UI Tests ──────────────────────────────────────────────────────────────────
 test.describe('Contact Form — UI', () => {
   test.beforeEach(async ({ page }) => {
+    // sendForm() fires POST /api/contact without awaiting it. Answer it here so the
+    // UI tests don't spend the 5/min rate limit the API tests below rely on; the
+    // tests that submit assert the payload the form sent instead.
+    await page.route('**/api/contact', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }));
     await page.goto('/');
     await waitForHomeContent(page);
     await page.locator('#contact').scrollIntoViewIfNeeded();
@@ -74,10 +79,14 @@ test.describe('Contact Form — UI', () => {
     // Select first real option (index 1 = "موقع ويب")
     await page.locator('#f-service').selectOption({ index: 1 });
 
+    const posted = page.waitForRequest((req) => req.url().endsWith('/api/contact') && req.method() === 'POST');
     await page.locator('.form-submit').click();
 
     // sendForm() calls showToast() with green color on success
     await expectSuccessToast(page, 8_000);
+    const body = (await posted).postDataJSON();
+    expect(body).toMatchObject({ name: VALID_PAYLOAD.name, email: VALID_PAYLOAD.email, message: VALID_PAYLOAD.message });
+    expect(body.service).toBeTruthy();
   });
 
   test('form fields are cleared after a successful submission', async ({ page }) => {
