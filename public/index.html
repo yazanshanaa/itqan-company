@@ -1040,9 +1040,29 @@
 
   // ======= MOBILE =======
   function toggleMobile() {
-    const open = document.getElementById('mobile-menu').classList.toggle('open');
-    document.querySelector('.hamburger').setAttribute('aria-expanded', open);
+    const menu = document.getElementById('mobile-menu');
+    const burger = document.querySelector('.hamburger');
+    const open = menu.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open);
+    if (open) { menu.querySelector('.mobile-close').focus(); return; }
+    // Closed with × or Escape: return focus to the hamburger. Closed by following a
+    // section link: leave focus alone so the jump to that section stands.
+    const a = document.activeElement;
+    if (!(a && a.tagName === 'A' && menu.contains(a))) burger.focus();
   }
+  // Keep keyboard focus inside the open mobile menu; Escape closes it
+  document.addEventListener('keydown', e => {
+    const menu = document.getElementById('mobile-menu');
+    if (!menu.classList.contains('open')) return;
+    if (e.key === 'Escape') { e.preventDefault(); toggleMobile(); document.querySelector('.hamburger').focus(); return; }
+    if (e.key !== 'Tab') return;
+    const items = [...menu.querySelectorAll('a[href], button')].filter(el => el.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0], last = items[items.length - 1];
+    if (!menu.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
 
   // ======= FORM =======
   function sendForm() {
