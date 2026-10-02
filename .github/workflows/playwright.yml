@@ -28,8 +28,12 @@ jobs:
       # seeded into the empty CI database by lib/seed.js on server start.
       run: |
         PASS=$(openssl rand -hex 16)
+        # connect-mongo's session encryption (kruptein) rejects secrets without at least
+        # 2 upper, 2 lower, 2 digits and 2 symbols; the suffix guarantees each class
+        SECRET="$(openssl rand -hex 32)Aa1!Bb2@"
         echo "::add-mask::$PASS"
-        echo "SESSION_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+        echo "::add-mask::$SECRET"
+        echo "SESSION_SECRET=$SECRET" >> "$GITHUB_ENV"
         echo "TEST_ADMIN_PASS=$PASS" >> "$GITHUB_ENV"
         echo "ADMIN_PASS_HASH=$(node -e "console.log(require('bcryptjs').hashSync(process.argv[1], 10))" "$PASS")" >> "$GITHUB_ENV"
     - name: Install Playwright Browsers
