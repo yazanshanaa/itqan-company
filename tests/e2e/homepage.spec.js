@@ -7,7 +7,7 @@ const { waitForHomeContent } = require('./helpers');
  * Homepage tests — verifies that all dynamically rendered sections appear
  * correctly after init() fetches /api/data and calls renderAll().
  *
- * Title:  "إتقان تك | حلول تقنية متكاملة"
+ * Title:  "إتقان تك | تطوير مواقع وتطبيقات وأتمتة n8n في جنين"
  * All grids are populated either from the API or from the DEFAULT fallback,
  * so assertions never rely on specific data values — only on presence.
  */
@@ -21,7 +21,7 @@ test.describe('Homepage — Structure & Content', () => {
   // ── Document ─────────────────────────────────────────────────────────────
   test('loads at "/" with the correct page title', async ({ page }) => {
     await expect(page).toHaveURL('/');
-    await expect(page).toHaveTitle('إتقان تك | حلول تقنية متكاملة');
+    await expect(page).toHaveTitle('إتقان تك | تطوير مواقع وتطبيقات وأتمتة n8n في جنين');
   });
 
   // ── Navbar ────────────────────────────────────────────────────────────────
