@@ -16,9 +16,15 @@ const EN = {
 };
 
 // Absolute origin used in canonical, hreflang, Open Graph, JSON-LD, robots.txt and sitemap.xml.
-// Prefer SITE_URL (e.g. https://itqan.tech); otherwise derive it from the request.
+// SITE_URL overrides it. Production and preview deployments use the real domain (so previews
+// never compete with it); local, dev and test servers use the request's own origin.
+const PRODUCTION_ORIGIN = 'https://itqantech.io';
+const isDeployed = () =>
+  process.env.NODE_ENV === 'production' || ['production', 'preview'].includes(process.env.VERCEL_ENV);
+
 function siteUrl(req) {
   if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/+$/, '');
+  if (isDeployed()) return PRODUCTION_ORIGIN;
   const host = req.get('host') || '';
   if (!SAFE_HOST.test(host)) return '';
   // req.protocol comes from X-Forwarded-Proto behind a proxy: never echo it raw
