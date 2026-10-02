@@ -107,6 +107,15 @@ test.describe('Navigation — Mobile (390 × 844)', () => {
     await expect(page.locator('#mobile-menu')).toBeHidden();
   });
 
+  test('the close button (×) closes the menu', async ({ page }) => {
+    await page.locator('[onclick="toggleMobile()"]').first().click();
+    await expect(page.locator('#mobile-menu')).toBeVisible();
+    // Fails with "intercepts pointer events" if the navbar logo covers the button again
+    await page.locator('.mobile-close').click();
+    await expect(page.locator('#mobile-menu')).toBeHidden();
+    await expect(page.locator('.hamburger')).toBeFocused();
+  });
+
   // The mobile language buttons live inside the hamburger menu
   test('mobile language buttons #btn-ar-m and #btn-en-m are visible', async ({ page }) => {
     await page.locator('[onclick="toggleMobile()"]').first().click();

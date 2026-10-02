@@ -165,6 +165,8 @@
     .mobile-menu a:hover{color:var(--primary)}
     .mobile-close{position:absolute;top:24px;right:24px;background:none;border:none;color:var(--text);font-size:28px;cursor:pointer}
     html[dir="ltr"] .mobile-close{right:auto;left:24px}
+    .menu-open .navbar{pointer-events:none}
+    .menu-open .navbar .hamburger,.menu-open .navbar .nav-actions{pointer-events:auto}
 
     /* HERO */
     .hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;position:relative;overflow:hidden}
@@ -1114,6 +1116,8 @@
     const burger = document.querySelector('.hamburger');
     const open = menu.classList.toggle('open');
     burger.setAttribute('aria-expanded', open);
+    // The navbar stays above the open menu; let taps through it to the close button
+    document.body.classList.toggle('menu-open', open);
     if (open) { menu.querySelector('.mobile-close').focus(); return; }
     // Closed with × or Escape: return focus to the hamburger. Closed by following a
     // section link: leave focus alone so the jump to that section stands.
