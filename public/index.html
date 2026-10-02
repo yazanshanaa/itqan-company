@@ -440,10 +440,10 @@
   </style>
 </head>
 <body>
-  <a href="#main" class="skip-link">تخطَّ إلى المحتوى</a>
+  <a href="#main" class="skip-link" data-a11y-text="skip">تخطَّ إلى المحتوى</a>
 
   <!-- NAVBAR -->
-  <nav class="navbar" id="navbar" aria-label="القائمة الرئيسية">
+  <nav class="navbar" id="navbar" aria-label="القائمة الرئيسية" data-a11y="nav">
     <div class="container">
       <a href="#" class="nav-logo">
         <picture>
@@ -468,15 +468,15 @@
         </div>
         <a href="#contact" class="btn btn-primary" data-key="nav.cta">ابدأ مشروعك</a>
       </div>
-      <button class="hamburger" onclick="toggleMobile()" aria-label="فتح القائمة" aria-controls="mobile-menu" aria-expanded="false">
+      <button class="hamburger" onclick="toggleMobile()" aria-label="فتح القائمة" data-a11y="menuOpen" aria-controls="mobile-menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
   <!-- MOBILE MENU -->
-  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="قائمة الجوال">
-    <button class="mobile-close" onclick="toggleMobile()" aria-label="إغلاق القائمة"><i class="fas fa-times" aria-hidden="true"></i></button>
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="قائمة الجوال" data-a11y="mobileNav">
+    <button class="mobile-close" onclick="toggleMobile()" aria-label="إغلاق القائمة" data-a11y="menuClose"><i class="fas fa-times" aria-hidden="true"></i></button>
     <a href="#services" onclick="toggleMobile()" data-key="nav.services">خدماتنا</a>
     <a href="#process" onclick="toggleMobile()" data-key="nav.process">كيف نعمل</a>
     <a href="#portfolio" onclick="toggleMobile()" data-key="nav.portfolio">أعمالنا</a>
@@ -661,7 +661,7 @@
   </main>
 
   <!-- WHATSAPP FLOAT -->
-  <a href="#" class="wa-float" id="wa-btn" target="_blank" rel="noopener noreferrer" title="تواصل عبر واتساب" aria-label="تواصل عبر واتساب"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+  <a href="#" class="wa-float" id="wa-btn" target="_blank" rel="noopener noreferrer" title="تواصل عبر واتساب" aria-label="تواصل عبر واتساب" data-a11y="whatsapp" data-a11y-title="whatsapp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
 
   <!-- FOOTER -->
   <footer>
@@ -859,7 +859,19 @@
     }
     const title = html.dataset[isAr ? 'titleAr' : 'titleEn'];
     if (title) document.title = title;
+    const a11y = A11Y_TEXT[isAr ? 'ar' : 'en'];
+    document.querySelectorAll('[data-a11y]').forEach(el => el.setAttribute('aria-label', a11y[el.dataset.a11y]));
+    document.querySelectorAll('[data-a11y-text]').forEach(el => { el.textContent = a11y[el.dataset.a11yText]; });
+    document.querySelectorAll('[data-a11y-title]').forEach(el => { el.title = a11y[el.dataset.a11yTitle]; });
   }
+  // Screen-reader-only labels and the skip link, per language
+  const A11Y_TEXT = {
+    ar: { skip: 'تخطَّ إلى المحتوى', nav: 'القائمة الرئيسية', menuOpen: 'فتح القائمة', menuClose: 'إغلاق القائمة', mobileNav: 'قائمة الجوال', whatsapp: 'تواصل عبر واتساب' },
+    en: { skip: 'Skip to content', nav: 'Main navigation', menuOpen: 'Open menu', menuClose: 'Close menu', mobileNav: 'Mobile menu', whatsapp: 'Chat on WhatsApp' }
+  };
+  // Back/forward can restore an entry whose path belongs to the other language: put the
+  // address bar back in step with the language the visitor chose
+  window.addEventListener('popstate', applyLang);
   function t(key) { return (D.content[lang] && D.content[lang][key]) || (D.content['ar'] && D.content['ar'][key]) || key; }
 
   // ======= SECURITY HELPERS =======
