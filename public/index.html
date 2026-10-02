@@ -128,6 +128,16 @@
     .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}
     .reveal-delay-4{transition-delay:.4s}.reveal-delay-5{transition-delay:.5s}
 
+    /* ACCESSIBILITY — only visible for keyboard users / reduced-motion preference */
+    :focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+    .skip-link{position:absolute;top:-100px;right:16px;z-index:2000;background:var(--primary);color:#050B18;padding:10px 18px;border-radius:8px;font-weight:700;text-decoration:none}
+    .skip-link:focus{top:16px}
+    html[dir="ltr"] .skip-link{right:auto;left:16px}
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+    }
+
     /* NAVBAR */
     .navbar{position:fixed;top:0;width:100%;z-index:1000;padding:20px 0;transition:all .4s ease}
     .navbar.scrolled{background:rgba(6,13,31,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 0}
@@ -425,15 +435,16 @@
   </style>
 </head>
 <body>
+  <a href="#main" class="skip-link">تخطَّ إلى المحتوى</a>
 
   <!-- NAVBAR -->
-  <nav class="navbar" id="navbar">
+  <nav class="navbar" id="navbar" aria-label="القائمة الرئيسية">
     <div class="container">
       <a href="#" class="nav-logo">
         <picture>
           <source type="image/avif" srcset="img/logo-178.avif 178w, img/logo-356.avif 356w" sizes="169px">
           <source type="image/webp" srcset="img/logo-178.webp 178w, img/logo-356.webp 356w" sizes="169px">
-          <img src="img/orginal.png" alt="Itqan" class="site-logo-img" width="677" height="369" fetchpriority="high">
+          <img src="img/orginal.png" alt="إتقان تك - Itqan Tech" class="site-logo-img" width="677" height="369" fetchpriority="high">
         </picture>
         <span id="logo-name" style="display:none">إتقان</span>
       </a>
@@ -446,33 +457,34 @@
         <li><a href="#contact" data-key="nav.contact">تواصل معنا</a></li>
       </ul>
       <div class="nav-actions">
-        <div class="lang-toggle">
-          <button class="lang-btn active" id="btn-ar" onclick="setLang('ar')">ع</button>
-          <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+        <div class="lang-toggle" role="group" aria-label="اللغة / Language">
+          <button class="lang-btn active" id="btn-ar" onclick="setLang('ar')" aria-label="العربية" aria-pressed="true">ع</button>
+          <button class="lang-btn" id="btn-en" onclick="setLang('en')" aria-label="English" aria-pressed="false">EN</button>
         </div>
         <a href="#contact" class="btn btn-primary" data-key="nav.cta">ابدأ مشروعك</a>
       </div>
-      <button class="hamburger" onclick="toggleMobile()">
+      <button class="hamburger" onclick="toggleMobile()" aria-label="فتح القائمة" aria-controls="mobile-menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
   <!-- MOBILE MENU -->
-  <div class="mobile-menu" id="mobile-menu">
-    <button class="mobile-close" onclick="toggleMobile()"><i class="fas fa-times"></i></button>
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="قائمة الجوال">
+    <button class="mobile-close" onclick="toggleMobile()" aria-label="إغلاق القائمة"><i class="fas fa-times" aria-hidden="true"></i></button>
     <a href="#services" onclick="toggleMobile()" data-key="nav.services">خدماتنا</a>
     <a href="#process" onclick="toggleMobile()" data-key="nav.process">كيف نعمل</a>
     <a href="#portfolio" onclick="toggleMobile()" data-key="nav.portfolio">أعمالنا</a>
     <a href="#products" id="nav-products-mob" onclick="toggleMobile()" data-key="nav.products" style="display:none">أنظمتنا</a>
     <a href="#about" onclick="toggleMobile()" data-key="nav.about">عنّا</a>
     <a href="#contact" onclick="toggleMobile()" data-key="nav.contact">تواصل معنا</a>
-    <div class="lang-toggle" style="margin-top:16px">
-      <button class="lang-btn active" id="btn-ar-m" onclick="setLang('ar')">ع</button>
-      <button class="lang-btn" id="btn-en-m" onclick="setLang('en')">EN</button>
+    <div class="lang-toggle" style="margin-top:16px" role="group" aria-label="اللغة / Language">
+      <button class="lang-btn active" id="btn-ar-m" onclick="setLang('ar')" aria-label="العربية" aria-pressed="true">ع</button>
+      <button class="lang-btn" id="btn-en-m" onclick="setLang('en')" aria-label="English" aria-pressed="false">EN</button>
     </div>
   </div>
 
+  <main id="main">
   <!-- HERO -->
   <section class="hero" id="home">
     <div class="hero-orb orb1"></div>
@@ -480,15 +492,15 @@
     <div class="container">
       <div class="hero-content">
         <div class="hero-text">
-          <div class="section-badge"><i class="fas fa-bolt"></i><span data-key="hero.badge">شريكك التقني الموثوق</span></div>
+          <div class="section-badge"><i class="fas fa-bolt" aria-hidden="true"></i><span data-key="hero.badge">شريكك التقني الموثوق</span></div>
           <h1 class="hero-title">
             <span data-key="hero.line1">نبني مستقبلك</span><br>
             <span class="grad" data-key="hero.line2">الرقمي</span>
           </h1>
           <p class="hero-subtitle" data-key="hero.subtitle">نصمم ونطور مواقع ويب متكاملة، تطبيقات موبايل، وحلول ذكاء اصطناعي تُحوّل أفكارك إلى واقع رقمي مذهل</p>
           <div class="hero-btns">
-            <a href="#contact" class="btn btn-primary"><i class="fas fa-rocket"></i><span data-key="hero.cta1">ابدأ مشروعك الآن</span></a>
-            <a href="#portfolio" class="btn btn-outline"><span data-key="hero.cta2">استعرض أعمالنا</span><i class="fas fa-arrow-left" id="hero-arr"></i></a>
+            <a href="#contact" class="btn btn-primary"><i class="fas fa-rocket" aria-hidden="true"></i><span data-key="hero.cta1">ابدأ مشروعك الآن</span></a>
+            <a href="#portfolio" class="btn btn-outline"><span data-key="hero.cta2">استعرض أعمالنا</span><i class="fas fa-arrow-left" id="hero-arr" aria-hidden="true"></i></a>
           </div>
         </div>
         <div class="hero-visual">
@@ -497,7 +509,7 @@
               <div class="card-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
               <span style="font-size:12px;color:var(--text-muted);font-family:monospace">hitech.ps</span>
             </div>
-            <div class="hero-code">
+            <div class="hero-code" aria-hidden="true">
               <div><span class="kw">const</span> project = {</div>
               <div>&nbsp;&nbsp;<span class="fn">name</span>: <span class="str">"Your Dream App"</span>,</div>
               <div>&nbsp;&nbsp;<span class="fn">tech</span>: <span class="str">"React + Node.js"</span>,</div>
@@ -514,14 +526,14 @@
         </div>
       </div>
     </div>
-    <div class="scroll-ind"><span data-key="hero.scroll">اكتشف أكثر</span><i class="fas fa-chevron-down"></i></div>
+    <div class="scroll-ind"><span data-key="hero.scroll">اكتشف أكثر</span><i class="fas fa-chevron-down" aria-hidden="true"></i></div>
   </section>
 
   <!-- SERVICES -->
   <section class="section" id="services">
     <div class="container">
       <div class="services-header">
-        <div class="section-badge reveal"><i class="fas fa-layer-group"></i><span data-key="svc.badge">خدماتنا</span></div>
+        <div class="section-badge reveal"><i class="fas fa-layer-group" aria-hidden="true"></i><span data-key="svc.badge">خدماتنا</span></div>
         <h2 class="section-title reveal reveal-delay-1"><span data-key="svc.titleprefix">حلول تقنية </span><span class="highlight" data-key="svc.titlehl">متكاملة</span></h2>
         <p class="section-subtitle reveal reveal-delay-2" data-key="svc.subtitle">نقدم طيفاً واسعاً من الخدمات التقنية لمساعدة عملك على النمو والتوسع في العالم الرقمي</p>
       </div>
@@ -540,19 +552,19 @@
       <div class="about-grid">
         <div class="about-visual reveal">
           <div class="about-img-wrap">
-            <div class="tech-card"><i class="fab fa-react"></i><span>React</span></div>
-            <div class="tech-card"><i class="fab fa-node-js"></i><span>Node.js</span></div>
-            <div class="tech-card"><i class="fas fa-mobile-alt"></i><span>Flutter</span></div>
-            <div class="tech-card"><i class="fas fa-brain"></i><span>AI / ML</span></div>
+            <div class="tech-card"><i class="fab fa-react" aria-hidden="true"></i><span>React</span></div>
+            <div class="tech-card"><i class="fab fa-node-js" aria-hidden="true"></i><span>Node.js</span></div>
+            <div class="tech-card"><i class="fas fa-mobile-alt" aria-hidden="true"></i><span>Flutter</span></div>
+            <div class="tech-card"><i class="fas fa-brain" aria-hidden="true"></i><span>AI / ML</span></div>
           </div>
         </div>
         <div class="about-text">
-          <div class="section-badge reveal"><i class="fas fa-building"></i><span data-key="about.badge">من نحن</span></div>
+          <div class="section-badge reveal"><i class="fas fa-building" aria-hidden="true"></i><span data-key="about.badge">من نحن</span></div>
           <h2 class="section-title reveal reveal-delay-1"><span data-key="about.titleprefix">فريق متخصص في </span><span class="highlight" data-key="about.titlehl">بناء الحلول التقنية</span></h2>
           <p class="section-subtitle reveal reveal-delay-2" data-key="about.desc">هايتك شركة تقنية متخصصة في تطوير الحلول الرقمية. نجمع بين الإبداع التقني والفهم العميق لاحتياجات السوق.</p>
           <ul class="about-points reveal reveal-delay-3" id="about-points"></ul>
           <div style="margin-top:32px" class="reveal reveal-delay-4">
-            <a href="#contact" class="btn btn-primary"><i class="fas fa-handshake"></i><span data-key="about.cta">تواصل مع فريقنا</span></a>
+            <a href="#contact" class="btn btn-primary"><i class="fas fa-handshake" aria-hidden="true"></i><span data-key="about.cta">تواصل مع فريقنا</span></a>
           </div>
         </div>
       </div>
@@ -563,7 +575,7 @@
   <section class="section" id="process" style="background:linear-gradient(180deg,var(--bg) 0%,rgba(12,26,53,0.4) 50%,var(--bg) 100%)">
     <div class="container">
       <div style="text-align:center;margin-bottom:0">
-        <div class="section-badge reveal"><i class="fas fa-route"></i><span data-key="proc.badge">كيف نعمل</span></div>
+        <div class="section-badge reveal"><i class="fas fa-route" aria-hidden="true"></i><span data-key="proc.badge">كيف نعمل</span></div>
         <h2 class="section-title reveal reveal-delay-1"><span data-key="proc.titleprefix">من </span><span class="highlight" data-key="proc.titlehl">الفكرة إلى التسليم</span></h2>
         <p class="section-subtitle reveal reveal-delay-2" style="margin:0 auto" data-key="proc.subtitle">عملية واضحة ومنظمة تضمن لك نتائج استثنائية في كل مشروع</p>
       </div>
@@ -576,7 +588,7 @@
   <section class="section" id="testimonials" style="background:linear-gradient(180deg,var(--bg) 0%,rgba(12,26,53,0.3) 50%,var(--bg) 100%)">
     <div class="container">
       <div style="text-align:center;margin-bottom:0">
-        <div class="section-badge reveal"><i class="fas fa-star"></i><span data-key="testi.badge">آراء العملاء</span></div>
+        <div class="section-badge reveal"><i class="fas fa-star" aria-hidden="true"></i><span data-key="testi.badge">آراء العملاء</span></div>
         <h2 class="section-title reveal reveal-delay-1"><span data-key="testi.titleprefix">عملاؤنا </span><span class="highlight" data-key="testi.titlehl">يتحدثون عنا</span></h2>
         <p class="section-subtitle reveal reveal-delay-2" style="margin:0 auto" data-key="testi.subtitle">ثقة عملائنا هي أكبر جائزة نحصل عليها — اقرأ تجاربهم الحقيقية معنا</p>
       </div>
@@ -589,10 +601,10 @@
     <div class="container">
       <div class="portfolio-header">
         <div>
-          <div class="section-badge reveal"><i class="fas fa-th-large"></i><span data-key="port.badge">أعمالنا</span></div>
+          <div class="section-badge reveal"><i class="fas fa-th-large" aria-hidden="true"></i><span data-key="port.badge">أعمالنا</span></div>
           <h2 class="section-title reveal reveal-delay-1"><span data-key="port.titleprefix">مشاريع </span><span class="highlight" data-key="port.titlehl">نفخر بها</span></h2>
         </div>
-        <a href="#contact" class="btn btn-outline reveal"><span data-key="port.cta">ابدأ مشروعك</span><i class="fas fa-arrow-left" id="port-arr"></i></a>
+        <a href="#contact" class="btn btn-outline reveal"><span data-key="port.cta">ابدأ مشروعك</span><i class="fas fa-arrow-left" id="port-arr" aria-hidden="true"></i></a>
       </div>
       <div class="portfolio-grid" id="portfolio-grid"></div>
     </div>
@@ -603,11 +615,11 @@
     <div class="container">
       <div class="products-header">
         <div>
-          <div class="section-badge reveal"><i class="fas fa-tags"></i><span data-key="prod.badge">للبيع الآن</span></div>
+          <div class="section-badge reveal"><i class="fas fa-tags" aria-hidden="true"></i><span data-key="prod.badge">للبيع الآن</span></div>
           <h2 class="section-title reveal reveal-delay-1"><span data-key="prod.titleprefix">أنظمة ومواقع </span><span class="highlight" data-key="prod.titlehl">جاهزة للبيع</span></h2>
           <p class="section-subtitle reveal reveal-delay-2" data-key="prod.subtitle">حلول تقنية جاهزة للتسليم الفوري</p>
         </div>
-        <a href="#contact" class="btn btn-outline reveal"><span data-key="nav.cta">ابدأ مشروعك</span><i class="fas fa-arrow-left" id="prod-arr"></i></a>
+        <a href="#contact" class="btn btn-outline reveal"><span data-key="nav.cta">ابدأ مشروعك</span><i class="fas fa-arrow-left" id="prod-arr" aria-hidden="true"></i></a>
       </div>
       <div class="products-grid" id="products-grid"></div>
     </div>
@@ -617,53 +629,55 @@
   <section class="section" id="contact">
     <div class="container">
       <div style="text-align:center;margin-bottom:60px">
-        <div class="section-badge reveal"><i class="fas fa-envelope"></i><span data-key="con.badge">تواصل معنا</span></div>
+        <div class="section-badge reveal"><i class="fas fa-envelope" aria-hidden="true"></i><span data-key="con.badge">تواصل معنا</span></div>
         <h2 class="section-title reveal reveal-delay-1"><span data-key="con.titleprefix">هل لديك </span><span class="highlight" data-key="con.titlehl">مشروع في ذهنك؟</span></h2>
         <p class="section-subtitle reveal reveal-delay-2" style="margin:0 auto" data-key="con.subtitle">نحن هنا لمساعدتك في تحقيق رؤيتك الرقمية. تواصل معنا وابدأ رحلتك التقنية</p>
       </div>
       <div class="contact-grid">
         <div>
-          <div class="contact-item reveal"><div class="ci-icon"><i class="fas fa-phone"></i></div><div class="ci-text"><strong data-key="con.phoneL">الهاتف</strong><span id="c-phone"></span></div></div>
-          <div class="contact-item reveal reveal-delay-1"><div class="ci-icon"><i class="fas fa-envelope"></i></div><div class="ci-text"><strong data-key="con.emailL">البريد الإلكتروني</strong><span id="c-email"></span></div></div>
-          <div class="contact-item reveal reveal-delay-2"><div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div><div class="ci-text"><strong data-key="con.addrL">الموقع</strong><span id="c-addr" data-key="con.address">جنين، فلسطين</span></div></div>
-          <div class="contact-item reveal reveal-delay-3"><div class="ci-icon"><i class="fab fa-whatsapp"></i></div><div class="ci-text"><strong data-key="con.waL">واتساب</strong><span id="c-wa"></span></div></div>
+          <div class="contact-item reveal"><div class="ci-icon"><i class="fas fa-phone" aria-hidden="true"></i></div><div class="ci-text"><strong data-key="con.phoneL">الهاتف</strong><span id="c-phone"></span></div></div>
+          <div class="contact-item reveal reveal-delay-1"><div class="ci-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div><div class="ci-text"><strong data-key="con.emailL">البريد الإلكتروني</strong><span id="c-email"></span></div></div>
+          <div class="contact-item reveal reveal-delay-2"><div class="ci-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div class="ci-text"><strong data-key="con.addrL">الموقع</strong><span id="c-addr" data-key="con.address">جنين، فلسطين</span></div></div>
+          <div class="contact-item reveal reveal-delay-3"><div class="ci-icon"><i class="fab fa-whatsapp" aria-hidden="true"></i></div><div class="ci-text"><strong data-key="con.waL">واتساب</strong><span id="c-wa"></span></div></div>
         </div>
         <div class="contact-form reveal reveal-delay-2">
-          <div class="form-group"><label data-key="form.name">الاسم الكامل</label><input type="text" id="f-name"></div>
-          <div class="form-group"><label data-key="form.email">البريد الإلكتروني</label><input type="email" id="f-email"></div>
-          <div class="form-group"><label data-key="form.svc">الخدمة المطلوبة</label>
+          <div class="form-group"><label for="f-name" data-key="form.name">الاسم الكامل</label><input type="text" id="f-name" autocomplete="name" aria-required="true"></div>
+          <div class="form-group"><label for="f-email" data-key="form.email">البريد الإلكتروني</label><input type="email" id="f-email" autocomplete="email" aria-required="true"></div>
+          <div class="form-group"><label for="f-service" data-key="form.svc">الخدمة المطلوبة</label>
             <select id="f-service"></select>
           </div>
-          <div class="form-group"><label data-key="form.msg">رسالتك</label><textarea id="f-msg"></textarea></div>
-          <button class="btn btn-primary form-submit" onclick="sendForm()"><i class="fas fa-paper-plane"></i><span data-key="form.send">إرسال الرسالة</span></button>
+          <div class="form-group"><label for="f-msg" data-key="form.msg">رسالتك</label><textarea id="f-msg" aria-required="true"></textarea></div>
+          <button type="button" class="btn btn-primary form-submit" onclick="sendForm()"><i class="fas fa-paper-plane" aria-hidden="true"></i><span data-key="form.send">إرسال الرسالة</span></button>
         </div>
       </div>
     </div>
   </section>
 
+  </main>
+
   <!-- WHATSAPP FLOAT -->
-  <a href="#" class="wa-float" id="wa-btn" target="_blank" title="تواصل عبر واتساب"><i class="fab fa-whatsapp"></i></a>
+  <a href="#" class="wa-float" id="wa-btn" target="_blank" rel="noopener noreferrer" title="تواصل عبر واتساب" aria-label="تواصل عبر واتساب"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
 
   <!-- FOOTER -->
   <footer>
     <div class="container">
       <div class="footer-grid">
         <div>
-          <a href="#" class="nav-logo"><picture><source type="image/avif" srcset="img/logo-178.avif 178w, img/logo-356.avif 356w" sizes="140px"><source type="image/webp" srcset="img/logo-178.webp 178w, img/logo-356.webp 356w" sizes="140px"><img src="img/orginal.png" alt="Itqan" class="site-logo-img" width="677" height="369" loading="lazy" decoding="async"></picture><span id="f-logo-name" style="display:none">إتقان</span></a>
+          <a href="#" class="nav-logo"><picture><source type="image/avif" srcset="img/logo-178.avif 178w, img/logo-356.avif 356w" sizes="140px"><source type="image/webp" srcset="img/logo-178.webp 178w, img/logo-356.webp 356w" sizes="140px"><img src="img/orginal.png" alt="إتقان تك - Itqan Tech" class="site-logo-img" width="677" height="369" loading="lazy" decoding="async"></picture><span id="f-logo-name" style="display:none">إتقان</span></a>
           <p class="footer-brand-desc" data-key="foot.desc">شركة هايتك لحلول التقنية — نبني مستقبلك الرقمي بأحدث التقنيات وأعلى معايير الجودة.</p>
           <div class="footer-socials">
-            <a class="fsoc" id="s-fb" href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a class="fsoc" id="s-ig" href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a class="fsoc" id="s-tt" href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
-            <a class="fsoc" id="s-li" href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            <a class="fsoc" id="s-fb" href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+            <a class="fsoc" id="s-ig" href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+            <a class="fsoc" id="s-tt" href="#" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok" aria-hidden="true"></i></a>
+            <a class="fsoc" id="s-li" href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
           </div>
         </div>
         <div>
-          <h4 class="footer-heading" data-key="foot.services">خدماتنا</h4>
+          <h2 class="footer-heading" data-key="foot.services">خدماتنا</h2>
           <ul class="footer-links" id="f-services"></ul>
         </div>
         <div>
-          <h4 class="footer-heading" data-key="foot.quick">روابط سريعة</h4>
+          <h2 class="footer-heading" data-key="foot.quick">روابط سريعة</h2>
           <ul class="footer-links">
             <li><a href="#" data-key="nav.home">الرئيسية</a></li>
             <li><a href="#about" data-key="nav.about">عنّا</a></li>
@@ -672,7 +686,7 @@
           </ul>
         </div>
         <div>
-          <h4 class="footer-heading" data-key="foot.contact">تواصل</h4>
+          <h2 class="footer-heading" data-key="foot.contact">تواصل</h2>
           <ul class="footer-links">
             <li><a href="#" id="f-phone"></a></li>
             <li><a href="#" id="f-email"></a></li>
@@ -686,7 +700,7 @@
     </div>
   </footer>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
   // ======= DEFAULT DATA =======
@@ -826,8 +840,8 @@
     const isAr = lang === 'ar';
     html.setAttribute('lang', isAr ? 'ar' : 'en');
     html.setAttribute('dir', isAr ? 'rtl' : 'ltr');
-    ['btn-ar','btn-ar-m'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.toggle('active', isAr); });
-    ['btn-en','btn-en-m'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.toggle('active', !isAr); });
+    ['btn-ar','btn-ar-m'].forEach(id => { const el=document.getElementById(id); if(el) { el.classList.toggle('active', isAr); el.setAttribute('aria-pressed', isAr); } });
+    ['btn-en','btn-en-m'].forEach(id => { const el=document.getElementById(id); if(el) { el.classList.toggle('active', !isAr); el.setAttribute('aria-pressed', !isAr); } });
     const arr = isAr ? 'fa-arrow-left' : 'fa-arrow-right';
     document.getElementById('hero-arr').className = 'fas '+arr;
     document.getElementById('port-arr').className = 'fas '+arr;
@@ -856,10 +870,10 @@
     const arr = lang==='ar' ? 'fa-arrow-left' : 'fa-arrow-right';
     document.getElementById('services-grid').innerHTML = svcs.map((s,i) => `
       <div class="service-card reveal ${delays[i]||''}">
-        <div class="svc-icon">${s.image&&safeUrl(s.image)?`<img src="${esc(safeUrl(s.image))}" alt="${esc(s.title)}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`:`<i class="fas ${esc(s.icon)}"></i>`}</div>
-        <div class="svc-title">${esc(s.title)}</div>
+        <div class="svc-icon">${s.image&&safeUrl(s.image)?`<img src="${esc(safeUrl(s.image))}" alt="${esc(s.title)}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`:`<i class="fas ${esc(s.icon)}" aria-hidden="true"></i>`}</div>
+        <h3 class="svc-title">${esc(s.title)}</h3>
         <div class="svc-desc">${esc(s.desc)}</div>
-        <div class="svc-arrow"><span>${esc(more)}</span><i class="fas ${esc(arr)}"></i></div>
+        <div class="svc-arrow"><span>${esc(more)}</span><i class="fas ${esc(arr)}" aria-hidden="true"></i></div>
       </div>`).join('');
   }
   function renderStats() {
@@ -874,7 +888,7 @@
   function renderAbout() {
     const pts = D.aboutPoints[lang] || D.aboutPoints.ar;
     document.getElementById('about-points').innerHTML = pts.map(p =>
-      `<li><i class="fas fa-check-circle"></i>${esc(p)}</li>`).join('');
+      `<li><i class="fas fa-check-circle" aria-hidden="true"></i>${esc(p)}</li>`).join('');
   }
   function renderPortfolio() {
     const projs = (D.portfolio[lang] || D.portfolio.ar).filter(p => p.visible !== false);
@@ -884,10 +898,10 @@
         <div class="port-image">${p.image ? `<img src="${esc(safeUrl(p.image))}" alt="${esc(p.title)}" loading="lazy" decoding="async">` : esc(p.emoji||'📦')}</div>
         <div class="port-info">
           <div class="port-cat">${esc(p.cat)}</div>
-          <div class="port-title">${esc(p.title)}</div>
+          <h3 class="port-title">${esc(p.title)}</h3>
           <div class="port-desc">${esc(p.desc)}</div>
           <div class="port-tags">${p.tags.map(tg=>`<span class="port-tag">${esc(tg)}</span>`).join('')}</div>
-          ${p.showUrl && p.url && safeUrl(p.url) ? `<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer" class="port-link"><i class="fas fa-external-link-alt"></i>${lang==='ar'?'شاهد الموقع':'View Website'}</a>` : ''}
+          ${p.showUrl && p.url && safeUrl(p.url) ? `<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer" class="port-link"><i class="fas fa-external-link-alt" aria-hidden="true"></i>${lang==='ar'?'شاهد الموقع':'View Website'}</a>` : ''}
         </div>
       </div>`).join('');
   }
@@ -931,7 +945,7 @@
     document.getElementById('process-grid').innerHTML = steps.map((s,i) => `
       <div class="process-step reveal ${delays[i]||''}">
         <div class="step-num" data-n="${i+1}">${esc(s.icon)}</div>
-        <div class="step-title">${esc(s.title)}</div>
+        <h3 class="step-title">${esc(s.title)}</h3>
         <div class="step-desc">${esc(s.desc)}</div>
       </div>`).join('');
   }
@@ -940,9 +954,9 @@
     const delays = ['','reveal-delay-1','reveal-delay-2'];
     document.getElementById('testi-grid').innerHTML = reviews.map((r,i) => `
       <div class="testi-card reveal ${delays[i%3]}">
-        <div class="testi-quote">"</div>
+        <div class="testi-quote" aria-hidden="true">"</div>
         <p class="testi-text">${esc(r.text)}</p>
-        <div class="testi-stars">${'<i class="fas fa-star"></i>'.repeat(Math.min(5,Math.max(0,parseInt(r.stars)||0)))}</div>
+        <div class="testi-stars" role="img" aria-label="${Math.min(5,Math.max(0,parseInt(r.stars)||0))}/5">${'<i class="fas fa-star" aria-hidden="true"></i>'.repeat(Math.min(5,Math.max(0,parseInt(r.stars)||0)))}</div>
         <div class="testi-author">
           <div class="testi-avatar">${esc(r.avatar)}</div>
           <div><div class="testi-name">${esc(r.name)}</div><div class="testi-role">${esc(r.role)}</div></div>
@@ -975,14 +989,14 @@
         <div class="product-image">${p.image && safeUrl(p.image) ? `<img src="${esc(safeUrl(p.image))}" alt="${esc(p.title)}" loading="lazy" decoding="async">` : esc(p.emoji||'📦')}</div>
         <div class="product-body">
           <div class="product-cat">${esc(p.cat)}</div>
-          <div class="product-title">${esc(p.title)}</div>
+          <h3 class="product-title">${esc(p.title)}</h3>
           <div class="product-desc">${esc(p.desc)}</div>
           ${p.tags && p.tags.length ? `<div class="product-tags">${p.tags.map(tg=>`<span class="product-tag">${esc(tg)}</span>`).join('')}</div>` : ''}
           <div class="product-footer">
             ${p.price ? `<span class="product-price">${esc(p.price)} ${esc(p.currency||'')}</span>` : '<span></span>'}
-            ${p.showUrl && p.url && safeUrl(p.url) ? `<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer" class="product-link"><i class="fas fa-external-link-alt"></i><span data-key="prod.viewBtn">${t('prod.viewBtn')}</span></a>` : ''}
+            ${p.showUrl && p.url && safeUrl(p.url) ? `<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener noreferrer" class="product-link"><i class="fas fa-external-link-alt" aria-hidden="true"></i><span data-key="prod.viewBtn">${t('prod.viewBtn')}</span></a>` : ''}
           </div>
-          <a href="https://wa.me/${(D.company.whatsapp||'').replace(/[^0-9]/g,'')}" target="_blank" rel="noopener noreferrer" class="product-contact-btn"><i class="fab fa-whatsapp"></i>${t('prod.contactBtn')}</a>
+          <a href="https://wa.me/${(D.company.whatsapp||'').replace(/[^0-9]/g,'')}" target="_blank" rel="noopener noreferrer" class="product-contact-btn"><i class="fab fa-whatsapp" aria-hidden="true"></i>${t('prod.contactBtn')}</a>
         </div>
       </div>`).join('');
     // fix arrow direction for LTR
@@ -1026,7 +1040,8 @@
 
   // ======= MOBILE =======
   function toggleMobile() {
-    document.getElementById('mobile-menu').classList.toggle('open');
+    const open = document.getElementById('mobile-menu').classList.toggle('open');
+    document.querySelector('.hamburger').setAttribute('aria-expanded', open);
   }
 
   // ======= FORM =======
