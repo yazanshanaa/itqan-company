@@ -114,6 +114,9 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/data', require('./routes/data'));
 app.use('/api/contact', require('./routes/contact'));
 app.use(require('./routes/seo'));
+// The logo was renamed; keep the old URL working for anything that linked to it
+app.get('/img/orginal.png', (req, res) => res.redirect(301, '/img/logo.png'));
+
 // Express 4's mime table predates AVIF
 express.static.mime.define({ 'image/avif': ['avif'] });
 app.use(express.static(path.join(__dirname, 'public'), {
